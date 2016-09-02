@@ -19,7 +19,7 @@ node {
 	// Not yet implemented
 	
 	stage 'Archive Artifacts'
-	step([$class: 'ArtifactArchiver', artifacts: '**/target/**/simple-maven-project.war', excludes: null, fingerprint: true, onlyIfSuccessful: true])
+	step([$class: 'ArtifactArchiver', artifacts: '**/target/**/project-home-generator-*.jar', excludes: null, fingerprint: true, onlyIfSuccessful: true])
 }
 @NonCPS
 def version(text) {
