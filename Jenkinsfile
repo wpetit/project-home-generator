@@ -24,6 +24,6 @@ node {
 @NonCPS
 def version(text) {
   def matcher = text =~ '<version>(.+)</version>'
-  matcher ? matcher[0][1][2] : null
+  matcher ? matcher[0][1] : null
 }
 	
