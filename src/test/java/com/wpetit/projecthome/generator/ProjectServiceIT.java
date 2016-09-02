@@ -80,6 +80,19 @@ public class ProjectServiceIT {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#getProject(Long)} with unknown
+	 * project.
+	 */
+	@Test
+	public void testGetProjectUnknown() {
+		final Integer projectId = 98000;
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}",
+				String.class, projectId);
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	/**
 	 * Test method for
 	 * {@link ProjectService#addJenkinsConfiguration(Long, JenkinsConfigurationDto)}.
 	 */
@@ -141,6 +154,19 @@ public class ProjectServiceIT {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#getJenkinsConfiguration(Long)} with
+	 * unknown project.
+	 */
+	@Test
+	public void testGetJenkinsConfigurationUnknownProject() {
+		final Integer projectId = 98000;
+
+		final ResponseEntity<String> response = restTemplate
+				.getForEntity("/project-home-generator/project/{id}/jenkins", String.class, projectId);
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	/**
 	 * Test method for
 	 * {@link ProjectService#addSonarConfiguration(Long, SonarConfigurationDto)}.
 	 */
@@ -197,6 +223,19 @@ public class ProjectServiceIT {
 		final String expected = "{\"url\":\"http://ci.wpetit.com/sonar\",\"resourceNames\":[\"res1\"],\"projectId\":"
 				+ projectId + "}";
 		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
+	 * Test method for {@link ProjectService#getSonarConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetSonarConfigurationUnknownProject() {
+		final Integer projectId = 99000;
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}/sonar",
+				String.class, projectId);
+
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}
 
 	/**
