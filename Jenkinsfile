@@ -3,6 +3,10 @@ node {
 	
 	stage 'Build'
 	checkout scm
+	def v = version(readFile('pom.xml'))
+	if (v) {
+	  echo "Building version ${v}"
+	}
 	sh 'mvn -Dmaven.test.failure.ignore=true clean org.jacoco:jacoco-maven-plugin:prepare-agent install'	
 	// publish JUnit results to Jenkins
     step([$class: 'JUnitResultArchiver', testResults: '**/target/**/TEST-*.xml'])
@@ -12,13 +16,14 @@ node {
 	sh 'mvn sonar:sonar'
 	
 	stage 'Deploy Integration'
-	input 'Ready to go?'
-	sh 'mvn cargo:start &'
-	sh 'sleep 60'
-	sh 'mvn cargo:stop &'
+	// Not yet implemented
 	
 	stage 'Archive Artifacts'
 	step([$class: 'ArtifactArchiver', artifacts: '**/target/**/simple-maven-project.war', excludes: null, fingerprint: true, onlyIfSuccessful: true])
 }
-
+@NonCPS
+def version(text) {
+  def matcher = text =~ '<version>(.+)</version>'
+  matcher ? matcher[0][1][2] : null
+}
 	
