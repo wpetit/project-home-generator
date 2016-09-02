@@ -40,12 +40,12 @@ public class EnvironmentLink {
 	 * EnvironmentLink constructor.
 	 */
 	public EnvironmentLink() {
-		// NO-OP
+		// default constructor
 	}
 
 	/**
 	 * EnvironmentLink constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the id
 	 * @param name

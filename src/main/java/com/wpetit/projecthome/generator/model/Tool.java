@@ -43,11 +43,12 @@ public class Tool {
 	 * Tool constructor.
 	 */
 	public Tool() {
+		// default constructor
 	}
 
 	/**
 	 * Tool constructor.
-	 * 
+	 *
 	 * @param id
 	 * @param name
 	 * @param url

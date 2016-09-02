@@ -47,6 +47,7 @@ public class Link {
 	 * Link constructor.
 	 */
 	public Link() {
+		// default constructor
 	}
 
 	/**

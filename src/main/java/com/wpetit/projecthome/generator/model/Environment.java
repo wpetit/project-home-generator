@@ -41,7 +41,7 @@ public class Environment {
 	 * Environment constructor.
 	 */
 	public Environment() {
-		// NO-OP
+		// default constructor
 	}
 
 	/**

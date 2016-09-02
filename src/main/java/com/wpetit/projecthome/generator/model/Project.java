@@ -34,7 +34,7 @@ public class Project {
 	 * Project constructor.
 	 */
 	public Project() {
-		// NO-OP
+		// default constructor
 	}
 
 	/**

@@ -26,12 +26,12 @@ public class EnvironmentDto {
 	 * EnvironmentDto constructor.
 	 */
 	public EnvironmentDto() {
-		// NO-OP
+		// default constructor
 	}
 
 	/**
 	 * EnvironmentDto constructor.
-	 * 
+	 *
 	 * @param id
 	 * @param name
 	 * @param projectId

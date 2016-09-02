@@ -42,6 +42,7 @@ public class SonarConfiguration {
 	 * SonarConfiguration constructor.
 	 */
 	public SonarConfiguration() {
+		// default constructor
 	}
 
 	/**

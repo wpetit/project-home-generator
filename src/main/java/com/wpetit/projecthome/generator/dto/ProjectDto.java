@@ -26,12 +26,12 @@ public class ProjectDto {
 	 * ProjectDto constructor.
 	 */
 	public ProjectDto() {
-		// NO-OP
+		// default constructor
 	}
 
 	/**
 	 * ProjectDto constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the id
 	 * @param name

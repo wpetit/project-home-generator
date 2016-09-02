@@ -42,11 +42,12 @@ public class JenkinsConfiguration {
 	 * JenkinsConfiguration constructor.
 	 */
 	public JenkinsConfiguration() {
+		// default constructor
 	}
 
 	/**
 	 * JenkinsConfiguration constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the id
 	 * @param url
