@@ -60,6 +60,26 @@ public class ProjectServiceIT {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#getProject(Long)}.
+	 */
+	@Test
+	public void testGetProject() {
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> entity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, entity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}",
+				String.class, projectId);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		final String expected = "{name:\"my-project\"}";
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
 	 * Test method for
 	 * {@link ProjectService#addJenkinsConfiguration(Long, JenkinsConfigurationDto)}.
 	 */
@@ -89,6 +109,38 @@ public class ProjectServiceIT {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#getJenkinsConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetJenkinsConfiguration() {
+		// create project
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> projectEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, projectEntity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		// add jenkins conf
+		final JenkinsConfigurationDto jenkinsConfigurationDto = new JenkinsConfigurationDto();
+		jenkinsConfigurationDto.setUrl("http://ci.wpetit.com/jenkins");
+		jenkinsConfigurationDto.setJobsName(Arrays.asList("job1"));
+		final HttpEntity<JenkinsConfigurationDto> entity = new HttpEntity<>(jenkinsConfigurationDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/jenkins", HttpMethod.PUT, entity, String.class,
+				projectId);
+
+		final ResponseEntity<String> response = restTemplate
+				.getForEntity("/project-home-generator/project/{id}/jenkins", String.class, projectId);
+
+		final String expected = "{\"url\":\"http://ci.wpetit.com/jenkins\",\"jobsName\":[\"job1\"],\"projectId\":"
+				+ projectId + "}";
+
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+
+	}
+
+	/**
 	 * Test method for
 	 * {@link ProjectService#addSonarConfiguration(Long, SonarConfigurationDto)}.
 	 */
@@ -114,6 +166,36 @@ public class ProjectServiceIT {
 		final String expected = "{\"url\":\"http://ci.wpetit.com/sonar\",\"resourceNames\":[\"res1\"],\"projectId\":"
 				+ projectId + "}";
 
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
+	 * Test method for {@link ProjectService#getSonarConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetSonarConfiguration() {
+		// create project
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> projectEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, projectEntity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		// add sonar conf
+		final SonarConfigurationDto sonarConfigurationDto = new SonarConfigurationDto();
+		sonarConfigurationDto.setUrl("http://ci.wpetit.com/sonar");
+		sonarConfigurationDto.setResourceNames(Arrays.asList("res1"));
+		final HttpEntity<SonarConfigurationDto> entity = new HttpEntity<>(sonarConfigurationDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/sonar", HttpMethod.PUT, entity, String.class,
+				projectId);
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}/sonar",
+				String.class, projectId);
+
+		final String expected = "{\"url\":\"http://ci.wpetit.com/sonar\",\"resourceNames\":[\"res1\"],\"projectId\":"
+				+ projectId + "}";
 		JSONAssert.assertEquals(expected, response.getBody(), false);
 	}
 
