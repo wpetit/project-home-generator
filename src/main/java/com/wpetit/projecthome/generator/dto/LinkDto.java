@@ -37,11 +37,12 @@ public class LinkDto {
 	 * LinkDto constructor.
 	 */
 	public LinkDto() {
+		// default constructor
 	}
 
 	/**
 	 * LinkDto constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the id
 	 * @param name

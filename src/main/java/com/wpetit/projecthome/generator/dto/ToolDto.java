@@ -33,11 +33,12 @@ public class ToolDto {
 	 * ToolDto constructor.
 	 */
 	public ToolDto() {
+		// default constructor
 	}
 
 	/**
 	 * ToolDto constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the id
 	 * @param name

@@ -31,6 +31,7 @@ public class EnvironmentLinkDto {
 	 * EnvironmentLinkDto constructor.
 	 */
 	public EnvironmentLinkDto() {
+		// default constructor
 	}
 
 	/**

@@ -30,11 +30,12 @@ public class SonarConfigurationDto {
 	 * SonarConfigurationDto constructor.
 	 */
 	public SonarConfigurationDto() {
+		// default constructor
 	}
 
 	/**
 	 * SonarConfigurationDto constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the id
 	 * @param url

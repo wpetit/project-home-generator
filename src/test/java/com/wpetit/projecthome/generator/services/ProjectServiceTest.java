@@ -330,10 +330,13 @@ public class ProjectServiceTest {
 		final ApplicationLink applicationLink = new ApplicationLink("images/nexus.png", "Nexus",
 				"http://ci.wpetit.com/nexus");
 		final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration("project1", null,
-				Arrays.asList(applicationLink), Arrays.asList(applicationTool), Arrays.asList(env),
 				"http://ci.wpetit.com/jenkins", "REPLACE_WITH BASE64(USER_JENKINS:PWD_JENKINS)",
-				"REPLACE_WITH BASE64(USER_SONAR:PWD_SONAR)", "http://ci.wpetit.com/sonar",
-				Arrays.asList("project-home-generator"), Arrays.asList("com.wpetit:project-home-generator"));
+				"REPLACE_WITH BASE64(USER_SONAR:PWD_SONAR)", "http://ci.wpetit.com/sonar");
+		applicationConfiguration.setApplicationLinks(Arrays.asList(applicationLink));
+		applicationConfiguration.setApplicationTools(Arrays.asList(applicationTool));
+		applicationConfiguration.setEnv(Arrays.asList(env));
+		applicationConfiguration.setJenkinsJobs(Arrays.asList("project-home-generator"));
+		applicationConfiguration.setSonarResources(Arrays.asList("com.wpetit:project-home-generator"));
 
 		given(projectBusiness.generateProjectConfiguration(1L)).willReturn(applicationConfiguration);
 

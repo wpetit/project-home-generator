@@ -47,32 +47,19 @@ public class ApplicationConfiguration {
 	 *
 	 * @param applicationName
 	 * @param applicationLogo
-	 * @param applicationLinks
-	 * @param applicationTools
-	 * @param env
 	 * @param jenkinsUrl
 	 * @param jenkinsBase64UsrPwd
 	 * @param sonarBase64UsrPwd
 	 * @param sonarUrl
-	 * @param jenkinsJobs
-	 * @param sonarResources
 	 */
-	public ApplicationConfiguration(final String applicationName, final String applicationLogo,
-			final List<ApplicationLink> applicationLinks, final List<ApplicationTool> applicationTools,
-			final List<Env> env, final String jenkinsUrl, final String jenkinsBase64UsrPwd,
-			final String sonarBase64UsrPwd, final String sonarUrl, final List<String> jenkinsJobs,
-			final List<String> sonarResources) {
+	public ApplicationConfiguration(final String applicationName, final String applicationLogo, final String jenkinsUrl,
+			final String jenkinsBase64UsrPwd, final String sonarBase64UsrPwd, final String sonarUrl) {
 		this.applicationName = applicationName;
 		this.applicationLogo = applicationLogo;
-		this.applicationLinks = applicationLinks;
-		this.applicationTools = applicationTools;
-		this.env = env;
 		this.jenkinsUrl = jenkinsUrl;
 		this.jenkinsBase64UsrPwd = jenkinsBase64UsrPwd;
 		this.sonarBase64UsrPwd = sonarBase64UsrPwd;
 		this.sonarUrl = sonarUrl;
-		this.jenkinsJobs = jenkinsJobs;
-		this.sonarResources = sonarResources;
 	}
 
 	/**

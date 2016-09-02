@@ -30,6 +30,7 @@ public class JenkinsConfigurationDto {
 	 * JenkinsConfigurationDto constructor.
 	 */
 	public JenkinsConfigurationDto() {
+		// default constructor
 	}
 
 	/**
