@@ -16,6 +16,7 @@ node {
 	sh 'mvn sonar:sonar'
 	
 	stage 'Deploy Integration'
+	echo "Not yet implemented"
 	// Not yet implemented
 	
 	stage 'Archive Artifacts'
