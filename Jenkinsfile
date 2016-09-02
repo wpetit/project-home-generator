@@ -15,9 +15,8 @@ node {
 	//step <object of type hudson.plugins.sonar.SonarRunnerBuilder>
 	sh 'mvn sonar:sonar'
 	
-	stage 'Deploy Integration'
-	echo "Not yet implemented"
-	// Not yet implemented
+	stage 'Deploy'
+	sh 'mvn deploy'
 	
 	stage 'Archive Artifacts'
 	step([$class: 'ArtifactArchiver', artifacts: '**/target/**/project-home-generator-*.jar', excludes: null, fingerprint: true, onlyIfSuccessful: true])
