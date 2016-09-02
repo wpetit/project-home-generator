@@ -19,7 +19,7 @@ node {
     ])
     
     stage 'Integration-Tests'
-    sh "mvn verify"
+    sh "mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify"
 
     step([
             $class     : 'ArtifactArchiver',
