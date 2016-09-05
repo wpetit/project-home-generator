@@ -38,7 +38,7 @@ node {
 	sh 'mvn deploy'
 	sh 'cp target/*.jar src/main/docker'
 	dir('src/main/docker') {
-		sh 'sudo docker build project-home-generator .'
+		sh 'sudo docker build -t project-home-generator .'
 		sh 'sudo docker rm -f project-home-generator'
 		sh 'sudo docker run -d -p 20000:8080 --name project-home-generator'
 	}
