@@ -1,48 +1,54 @@
 node {	
 	env.PATH = "${tool 'maven-3.3.9'}/bin:${env.PATH}"
 	
-	stage 'Checkout'
-    checkout scm
-    def v = version(readFile('pom.xml'))
-	if (v) {
-	  echo "Building version ${v}"
+	stage('Checkout') {
+	    checkout scm
+	    def v = version(readFile('pom.xml'))
+		if (v) {
+		  echo "Building version ${v}"
+		}
 	}
     
-    stage 'Build'
-    sh "mvn clean package"
+    stage('Build') {
+    	sh "mvn clean package"
+    }
     
-    stage 'Unit-Tests'
-    sh "mvn org.jacoco:jacoco-maven-plugin:prepare-agent test"
-    step([
-            $class     : 'JUnitResultArchiver',
-            testResults: '**/target/**/surefire-reports/TEST-*.xml'
-    ])
+    stage('Unit-Tests') {
+	    sh "mvn org.jacoco:jacoco-maven-plugin:prepare-agent test"
+	    step([
+	            $class     : 'JUnitResultArchiver',
+	            testResults: '**/target/**/surefire-reports/TEST-*.xml'
+	    ])
+    }
     
-    stage 'Integration-Tests'
-    sh "mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration verify"
-
-    step([
-            $class     : 'ArtifactArchiver',
-            artifacts  : '**/target/*.jar',
-            fingerprint: true
-    ])
-    step([
-            $class     : 'JUnitResultArchiver',
-            testResults: '**/target/**/failsafe-reports/TEST*.xml'
-    ])
+    stage('Integration-Tests') {
+	    sh "mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration verify"
 	
-	stage 'Analysis'
-	sh 'mvn sonar:sonar'
+	    step([
+	            $class     : 'ArtifactArchiver',
+	            artifacts  : '**/target/*.jar',
+	            fingerprint: true
+	    ])
+	    step([
+	            $class     : 'JUnitResultArchiver',
+	            testResults: '**/target/**/failsafe-reports/TEST*.xml'
+	    ])
+    }
 	
-	stage 'Deploy'
-	sh 'mvn deploy'
-	sh 'cp target/*.jar src/main/docker'
-	dir('src/main/docker') {
-		echo "Creating docker image"
-		sh 'sudo docker build -t project-home-generator .'
-		sh 'sudo docker rm -f project-home-generator || true'
-		sh 'sudo docker run -d -p 20000:8080 --name project-home-generator project-home-generator'
-		sh 'rm -rf *.jar'
+	stage('Code Analysis') {
+		sh 'mvn sonar:sonar'
+	}
+	
+	stage('Deploy') {
+		sh 'mvn deploy'
+		sh 'cp target/*.jar src/main/docker'
+		dir('src/main/docker') {
+			echo "Creating docker image"
+			sh 'sudo docker build -t project-home-generator .'
+			sh 'sudo docker rm -f project-home-generator || true'
+			sh 'sudo docker run -d -p 20000:8080 --name project-home-generator project-home-generator'
+			sh 'rm -rf *.jar'
+		}
 	}
 	
 }
