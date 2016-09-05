@@ -85,6 +85,9 @@ public class ProjectServiceTest {
 				.andExpect(content().json("[{\"name\":\"name1\", \"image\":\"image1\", \"id\":1}]"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#findEnvironmentsByProject(Long)}.
+	 */
 	@Test
 	public void testFindAllEnvironments() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -102,6 +105,10 @@ public class ProjectServiceTest {
 				.andExpect(content().json("[{\"name\":\"name1\", \"id\":1, \"projectId\":1}]"));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ProjectService#findEnvironmentLinksByEnvironment(Long)}.
+	 */
 	@Test
 	public void testFindAllEnvironmentLinksByEnvironment() throws Exception {
 		final Environment environment1 = new Environment(1L, "name1", Arrays.asList(), null);
@@ -117,6 +124,9 @@ public class ProjectServiceTest {
 				.json("[{\"name\":\"link1\", \"id\":1, \"url\":\"http://example.org\", \"environmentId\":1}]"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#findLinksByProject(Long)}.
+	 */
 	@Test
 	public void testFindLinks() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -132,6 +142,9 @@ public class ProjectServiceTest {
 						"[{\"name\":\"name1\", \"url\":\"http://example.org/link\", \"image\":\"image1\", \"id\":1, \"projectId\":1}]"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#findToolsByProject(Long)}.
+	 */
 	@Test
 	public void testFindTools() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -147,6 +160,9 @@ public class ProjectServiceTest {
 						"[{\"name\":\"name1\", \"url\":\"http://example.org/tool\", \"id\":1, \"projectId\":1}]"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#getProject(Long)}.
+	 */
 	@Test
 	public void testGetProject() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -159,6 +175,19 @@ public class ProjectServiceTest {
 				.andExpect(content().json("{\"name\":\"name1\", \"image\":\"image1\", \"id\":1}"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#getProject(Long) with unknown
+	 * project}.
+	 */
+	@Test
+	public void testGetProjectUnknown() throws Exception {
+		given(projectBusiness.getProject(1L)).willReturn(null);
+		mvc.perform(get("/project/{id}", 1L).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#addProject(ProjectDto)}.
+	 */
 	@Test
 	public void testAddProject() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -173,6 +202,10 @@ public class ProjectServiceTest {
 				.andExpect(content().json("{\"name\":\"name1\", \"image\":\"image1\", \"id\":1}"));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ProjectService#addJenkinsConfiguration(Long, JenkinsConfigurationDto)}.
+	 */
 	@Test
 	public void testAddJenkinsConfiguration() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -194,6 +227,10 @@ public class ProjectServiceTest {
 						content().json("{\"jobsName\":[\"job1\"], \"url\":\"http://example.org/jenkins\", \"id\":1}"));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ProjectService#addSonarConfiguration(Long, SonarConfigurationDto)}.
+	 */
 	@Test
 	public void testAddSonarConfiguration() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -216,6 +253,9 @@ public class ProjectServiceTest {
 						.json("{\"resourceNames\":[\"resource1\"], \"url\":\"http://example.org/sonar\", \"id\":1}"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#addLink(Long, LinkDto)}.
+	 */
 	@Test
 	public void testAddLink() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -235,6 +275,9 @@ public class ProjectServiceTest {
 						"{\"name\":\"name1\", \"url\":\"http://example.org/link\", \"image\":\"image1\", \"id\":1, \"projectId\":1}"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#addTool(Long, ToolDto)}.
+	 */
 	@Test
 	public void testAddTool() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -252,6 +295,10 @@ public class ProjectServiceTest {
 						.json("{\"name\":\"name1\", \"url\":\"http://example.org/tool\", \"id\":1, \"projectId\":1}"));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ProjectService#addEnvironment(Long, EnvironmentDto)}.
+	 */
 	@Test
 	public void testAddEnvironment() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -270,6 +317,10 @@ public class ProjectServiceTest {
 				.andExpect(content().json("{\"name\":\"name1\", \"id\":1, \"projectId\":1}"));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ProjectService#addEnvironmentLink(Long, EnvironmentLinkDto)}.
+	 */
 	@Test
 	public void testAddEnvironmentLink() throws Exception {
 		final Environment environment1 = new Environment(1L, "name1", Arrays.asList(), null);
@@ -288,6 +339,9 @@ public class ProjectServiceTest {
 						.json("{\"name\":\"link1\", \"id\":1, \"url\":\"http://example.org\", \"environmentId\":1}"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#getJenkinsConfiguration(Long)}.
+	 */
 	@Test
 	public void testGetJenkinsConfiguration() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -305,6 +359,9 @@ public class ProjectServiceTest {
 						content().json("{\"jobsName\":[\"job1\"], \"url\":\"http://example.org/jenkins\", \"id\":1}"));
 	}
 
+	/**
+	 * Test method for {@link ProjectService#getSonarConfiguration(Long)}.
+	 */
 	@Test
 	public void testGetSonarConfiguration() throws Exception {
 		final Project project1 = new Project(1L, "name1", "image1");
@@ -322,6 +379,10 @@ public class ProjectServiceTest {
 						.json("{\"resourceNames\":[\"resource1\"], \"url\":\"http://example.org/sonar\", \"id\":1}"));
 	}
 
+	/**
+	 * Test method for
+	 * {@link ProjectService#generateProjectConfiguration(Long)}.
+	 */
 	@Test
 	public void testGenerateProjectConfiguration() throws Exception {
 		final EnvUrl envUrl = new EnvUrl("Project-home", "http://ci.wpetit.com");
