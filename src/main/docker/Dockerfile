@@ -1,5 +1,8 @@
 FROM java:8
 VOLUME /tmp
 EXPOSE 8080
-ADD http://ci.wpetit.com/nexus/repository/maven-snapshots/com/wpetit/project-home-generator/1.0.0-SNAPSHOT/project-home-generator-1.0.0-20160830.130508-2.jar /app.jar
+ENV VERSION 1.0.0
+ENV BUILD ${VERSION}
+ENV REPOSITORY maven-releases
+ADD http://ci.wpetit.com/nexus/repository/${REPOSITORY}/com/wpetit/project-home-generator/${VERSION}/project-home-generator-${BUILD}.jar /app.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=8080","-jar","/app.jar"]
