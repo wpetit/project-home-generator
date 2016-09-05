@@ -84,12 +84,37 @@
 
 		</dependencies>
 	</dependencyManagement>
+
+
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>1.4.0.RELEASE</version>
+				</plugin>
+				<plugin>
+					<groupId>org.bsc.maven</groupId>
+					<artifactId>maven-processor-plugin</artifactId>
+					<version>2.2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.12</version>
+				</plugin>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+					<version>2.18.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>1.4.0.RELEASE</version>
 				<configuration>
 					<!-- <classifier>exec</classifier> -->
 					<mainClass>${start-class}</mainClass>
@@ -103,12 +128,11 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- DTO Mapper generators -->
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
-				<version>2.2.4</version>
 				<configuration>
 					<defaultOutputDirectory>
 						${project.build.directory}/generated-sources/java
@@ -157,7 +181,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.18.1</version>
 				<executions>
 					<execution>
 						<goals>
