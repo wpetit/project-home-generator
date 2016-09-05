@@ -350,6 +350,7 @@ public class ProjectServiceIT {
 		final EnvironmentLinkDto environmentLinkDto = new EnvironmentLinkDto();
 		environmentLinkDto.setName("envLink1");
 		environmentLinkDto.setUrl("http://ci.wpetit.com/envLink1");
+		environmentLinkDto.setEnvironmentId(Long.valueOf(environmentId));
 		final HttpEntity<EnvironmentLinkDto> entity = new HttpEntity<>(environmentLinkDto);
 		final ResponseEntity<String> response = restTemplate.exchange(
 				"/project-home-generator/project/{id}/environment/{environmentId}/link", HttpMethod.PUT, entity,
@@ -390,6 +391,7 @@ public class ProjectServiceIT {
 		final EnvironmentLinkDto environmentLinkDto = new EnvironmentLinkDto();
 		environmentLinkDto.setName("Project-home");
 		environmentLinkDto.setUrl("http://ci.wpetit.com");
+		environmentLinkDto.setEnvironmentId(Long.valueOf(environmentId));
 		final HttpEntity<EnvironmentLinkDto> envLinkEntity = new HttpEntity<>(environmentLinkDto);
 		restTemplate.exchange("/project-home-generator/project/{id}/environment/{environmentId}/link", HttpMethod.PUT,
 				envLinkEntity, String.class, projectId, environmentId);
@@ -468,6 +470,7 @@ public class ProjectServiceIT {
 		final EnvironmentLinkDto environmentLinkDto = new EnvironmentLinkDto();
 		environmentLinkDto.setName("Project-home");
 		environmentLinkDto.setUrl("http://ci.wpetit.com");
+		environmentLinkDto.setEnvironmentId(Long.valueOf(environmentId));
 		final HttpEntity<EnvironmentLinkDto> envLinkEntity = new HttpEntity<>(environmentLinkDto);
 		restTemplate.exchange("/project-home-generator/project/{id}/environment/{environmentId}/link", HttpMethod.PUT,
 				envLinkEntity, String.class, projectId, environmentId);

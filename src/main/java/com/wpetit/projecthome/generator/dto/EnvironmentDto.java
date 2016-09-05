@@ -1,7 +1,5 @@
 package com.wpetit.projecthome.generator.dto;
 
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -19,7 +17,6 @@ public class EnvironmentDto {
 	@Length(max = 256)
 	private String name;
 	/** The projectId. **/
-	@NotNull
 	private Long projectId;
 
 	/**
