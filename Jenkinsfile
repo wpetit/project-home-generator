@@ -36,7 +36,6 @@ node {
 	
 	stage 'Deploy'
 	sh 'mvn deploy'
-	def urlLatestVersion = getLatestVersion()
 	sh 'cp target/*.jar src/main/docker'
 	dir src/main/docker
 	sh 'sudo docker build project-home-generator .'
