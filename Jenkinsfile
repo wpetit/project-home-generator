@@ -40,8 +40,9 @@ node {
 	dir('src/main/docker') {
 		echo "Creating docker image"
 		sh 'sudo docker build -t project-home-generator .'
-		sh 'sudo docker rm -f project-home-generator; true'
+		sh 'sudo docker rm -f project-home-generator || true'
 		sh 'sudo docker run -d -p 20000:8080 --name project-home-generator'
+		sh 'rm -rf *.jar'
 	}
 	
 }
