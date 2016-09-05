@@ -3,6 +3,8 @@ package com.wpetit.projecthome.generator.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,7 +90,7 @@ public class ProjectService {
 	 * @return the project saved
 	 */
 	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ProjectDto addProject(@RequestBody final ProjectDto projectDto) {
+	public ProjectDto addProject(@RequestBody @Valid final ProjectDto projectDto) {
 		final Project project = projectBusiness.addProject(dtoToModelMapper.map(projectDto));
 		return modelToDtoMapper.map(project);
 	}
@@ -104,7 +106,7 @@ public class ProjectService {
 	 */
 	@RequestMapping(value = "{projectId}/environment", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public EnvironmentDto addEnvironment(@PathVariable("projectId") final Long projectId,
-			@RequestBody final EnvironmentDto environmentDto) {
+			@Valid @RequestBody final EnvironmentDto environmentDto) {
 		final Environment environment = projectBusiness.addEnvironment(projectId, dtoToModelMapper.map(environmentDto));
 		return modelToDtoMapper.map(environment);
 	}
@@ -133,7 +135,7 @@ public class ProjectService {
 	 */
 	@RequestMapping(value = "{projectId}/environment/{environmentId}/link", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public EnvironmentLinkDto addEnvironmentLink(@PathVariable("environmentId") final Long environmentId,
-			@RequestBody final EnvironmentLinkDto environmentLinkDto) {
+			@Valid @RequestBody final EnvironmentLinkDto environmentLinkDto) {
 		final EnvironmentLink environmentLink = projectBusiness.addEnvironmentLink(environmentId,
 				dtoToModelMapper.map(environmentLinkDto));
 		return modelToDtoMapper.map(environmentLink);
@@ -163,7 +165,7 @@ public class ProjectService {
 	 * @return the tool saved
 	 */
 	@RequestMapping(value = "{projectId}/tool", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public ToolDto addTool(@PathVariable("projectId") final Long projectId, @RequestBody final ToolDto toolDto) {
+	public ToolDto addTool(@PathVariable("projectId") final Long projectId, @Valid @RequestBody final ToolDto toolDto) {
 		final Tool tool = projectBusiness.addTool(projectId, dtoToModelMapper.map(toolDto));
 		return modelToDtoMapper.map(tool);
 	}
@@ -190,7 +192,7 @@ public class ProjectService {
 	 * @return the link saved
 	 */
 	@RequestMapping(value = "{projectId}/link", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	public LinkDto addLink(@PathVariable("projectId") final Long projectId, @RequestBody final LinkDto linkDto) {
+	public LinkDto addLink(@PathVariable("projectId") final Long projectId, @Valid @RequestBody final LinkDto linkDto) {
 		final Link link = projectBusiness.addLink(projectId, dtoToModelMapper.map(linkDto));
 		return modelToDtoMapper.map(link);
 	}
@@ -218,7 +220,7 @@ public class ProjectService {
 	 */
 	@RequestMapping(value = "{projectId}/jenkins", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public JenkinsConfigurationDto addJenkinsConfiguration(@PathVariable("projectId") final Long projectId,
-			@RequestBody final JenkinsConfigurationDto jenkinsConfigurationDto) {
+			@Valid @RequestBody final JenkinsConfigurationDto jenkinsConfigurationDto) {
 		final JenkinsConfiguration jenkinsConfiguration = projectBusiness.addJenkinsConfiguration(projectId,
 				dtoToModelMapper.map(jenkinsConfigurationDto));
 		return modelToDtoMapper.map(jenkinsConfiguration);
@@ -253,7 +255,7 @@ public class ProjectService {
 	 */
 	@RequestMapping(value = "{projectId}/sonar", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public SonarConfigurationDto addSonarConfiguration(@PathVariable("projectId") final Long projectId,
-			@RequestBody final SonarConfigurationDto sonarConfigurationDto) {
+			@Valid @RequestBody final SonarConfigurationDto sonarConfigurationDto) {
 		final SonarConfiguration sonarConfiguration = projectBusiness.addSonarConfiguration(projectId,
 				dtoToModelMapper.map(sonarConfigurationDto));
 		return modelToDtoMapper.map(sonarConfiguration);

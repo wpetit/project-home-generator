@@ -276,6 +276,19 @@ public class ProjectServiceTest {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#addLink(Long, LinkDto)} with
+	 * invalid name.
+	 */
+	@Test
+	public void testAddLinkNameTooLong() throws Exception {
+		mvc.perform(put("/project/{id}/link", 1)
+				.content(
+						"{\"name\":\"string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars_string_with_more_than_256_chars\", \"url\":\"http://example.org/link\", \"image\":\"image1\", \"projectId\":1}")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+	}
+
+	/**
 	 * Test method for {@link ProjectService#addTool(Long, ToolDto)}.
 	 */
 	@Test
