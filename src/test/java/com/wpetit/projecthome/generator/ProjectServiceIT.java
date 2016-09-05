@@ -440,4 +440,65 @@ public class ProjectServiceIT {
 		JSONAssert.assertEquals(expected, response.getBody(), false);
 	}
 
+	/**
+	 * Test method for {@link ProjectService#generateProjectConfiguration(Long)}
+	 * without Jenkins and Sonar.
+	 */
+	@Test
+	public void testGenerateProjectConfigurationWithoutJenkinsAndSonar() throws Exception {
+		// add project
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("project1");
+		final HttpEntity<ProjectDto> projectEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, projectEntity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		// add environment
+		final EnvironmentDto environmentDto = new EnvironmentDto();
+		environmentDto.setName("env1");
+		final HttpEntity<EnvironmentDto> environmentEntity = new HttpEntity<>(environmentDto);
+		final ResponseEntity<String> environmentResponse = restTemplate.exchange(
+				"/project-home-generator/project/{id}/environment", HttpMethod.PUT, environmentEntity, String.class,
+				projectId);
+		final Integer environmentId = JsonPath.read(environmentResponse.getBody(), "$.id");
+
+		// add environment link
+		final EnvironmentLinkDto environmentLinkDto = new EnvironmentLinkDto();
+		environmentLinkDto.setName("Project-home");
+		environmentLinkDto.setUrl("http://ci.wpetit.com");
+		final HttpEntity<EnvironmentLinkDto> envLinkEntity = new HttpEntity<>(environmentLinkDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/environment/{environmentId}/link", HttpMethod.PUT,
+				envLinkEntity, String.class, projectId, environmentId);
+
+		// add tool
+		final ToolDto toolDto = new ToolDto();
+		toolDto.setUrl("http://ci.wpetit.com/nexus");
+		toolDto.setName("Nexus");
+		final HttpEntity<ToolDto> toolEntity = new HttpEntity<>(toolDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/tool", HttpMethod.PUT, toolEntity, String.class,
+				projectId);
+
+		// add link
+		final LinkDto linkDto = new LinkDto();
+		linkDto.setUrl("http://ci.wpetit.com/nexus");
+		linkDto.setName("Nexus");
+		linkDto.setImage("images/nexus.png");
+		final HttpEntity<LinkDto> linkEntity = new HttpEntity<>(linkDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/link", HttpMethod.PUT, linkEntity, String.class,
+				projectId);
+
+		final String expected = "{\"applicationName\":\"project1\",\"applicationLogo\":null,\"applicationLinks\":[{\"linkLogo\":\"images/nexus.png\",\"linkName\":\"Nexus\",\"linkUrl\":\"http://ci.wpetit.com/nexus\"}],\"applicationTools\":[{\"url\":\"http://ci.wpetit.com/nexus\",\"name\":\"Nexus\"}],"
+				+ "\"env\":[{\"name\":\"env1\",\"urls\":[{\"urlName\":\"Project-home\",\"url\":\"http://ci.wpetit.com\"}]}],"
+				+ "\"jenkinsUrl\":null,\"jenkinsBase64UsrPwd\":null," + "\"sonarBase64UsrPwd\":null,\"sonarUrl\":null,"
+				+ "\"jenkinsJobs\":null,\"sonarResources\":null}";
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}/conf",
+				String.class, projectId);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
 }

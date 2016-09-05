@@ -4,6 +4,7 @@
 package com.wpetit.projecthome.generator.business;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -348,6 +349,64 @@ public class ProjectBusinessImplTest {
 		assertEquals(Arrays.asList("job"), applicationConfiguration.getJenkinsJobs());
 		assertEquals("http://ci.wpetit.com/sonar", applicationConfiguration.getSonarUrl());
 		assertEquals(Arrays.asList("res"), applicationConfiguration.getSonarResources());
+		assertEquals(1, applicationConfiguration.getApplicationLinks().size());
+		assertEquals("link", applicationConfiguration.getApplicationLinks().get(0).getLinkName());
+		assertEquals("http://ci.wpetit.com/link", applicationConfiguration.getApplicationLinks().get(0).getLinkUrl());
+		assertEquals("images/link.png", applicationConfiguration.getApplicationLinks().get(0).getLinkLogo());
+		assertEquals(1, applicationConfiguration.getApplicationTools().size());
+		assertEquals("tool", applicationConfiguration.getApplicationTools().get(0).getName());
+		assertEquals("http://ci.wpetit.com/tool", applicationConfiguration.getApplicationTools().get(0).getUrl());
+		assertEquals(1, applicationConfiguration.getEnv().size());
+		assertEquals("env", applicationConfiguration.getEnv().get(0).getName());
+		assertEquals(1, applicationConfiguration.getEnv().get(0).getUrls().size());
+		assertEquals("envLink1", applicationConfiguration.getEnv().get(0).getUrls().get(0).getUrlName());
+		assertEquals("http://ci.wpetit.com/project-home-generator",
+				applicationConfiguration.getEnv().get(0).getUrls().get(0).getUrl());
+
+		verify(projectDao).findOne(1L);
+		verify(environmentDao).findByProjectId(1L);
+		verify(environmentLinkDao).findByEnvironmentId(1L);
+		verify(toolDao).findByProjectId(1L);
+		verify(linkDao).findByProjectId(1L);
+		verify(jenkinsConfigurationDao).findByProjectId(1L);
+		verify(sonarConfigurationDao).findByProjectId(1L);
+	}
+
+	/**
+	 * Test method for
+	 * {@link ProjectBusinessImpl#generateProjectConfiguration(Long)}.
+	 */
+	@Test
+	public void testGenerateProjectConfigurationWithoutJenkinsAndSonar() {
+		final Project project = new Project(1L, "project", "images/project.png");
+		final EnvironmentLink environmentLink = new EnvironmentLink();
+		environmentLink.setName("envLink1");
+		environmentLink.setUrl("http://ci.wpetit.com/project-home-generator");
+		final List<EnvironmentLink> environmentLinks = Arrays.asList(environmentLink);
+		final Environment environment = new Environment(1L, "env", environmentLinks, project);
+		final List<Environment> environments = Arrays.asList(environment);
+		final Tool tool = new Tool(1L, "tool", "http://ci.wpetit.com/tool", project);
+		final List<Tool> tools = Arrays.asList(tool);
+		final Link link = new Link(1L, "link", "http://ci.wpetit.com/link", "images/link.png", project);
+		final List<Link> links = Arrays.asList(link);
+		final JenkinsConfiguration jenkinsConfiguration = null;
+		final SonarConfiguration sonarConfiguration = null;
+
+		when(jenkinsConfigurationDao.findByProjectId(1L)).thenReturn(jenkinsConfiguration);
+		when(sonarConfigurationDao.findByProjectId(1L)).thenReturn(sonarConfiguration);
+		when(linkDao.findByProjectId(1L)).thenReturn(links);
+		when(toolDao.findByProjectId(1L)).thenReturn(tools);
+		when(environmentDao.findByProjectId(1L)).thenReturn(environments);
+		when(environmentLinkDao.findByEnvironmentId(1L)).thenReturn(environmentLinks);
+		when(projectDao.findOne(1L)).thenReturn(project);
+
+		final ApplicationConfiguration applicationConfiguration = projectBusinessImpl.generateProjectConfiguration(1L);
+
+		assertEquals("project", applicationConfiguration.getApplicationName());
+		assertNull(applicationConfiguration.getJenkinsUrl());
+		assertNull(applicationConfiguration.getJenkinsJobs());
+		assertNull(applicationConfiguration.getSonarUrl());
+		assertNull(applicationConfiguration.getSonarResources());
 		assertEquals(1, applicationConfiguration.getApplicationLinks().size());
 		assertEquals("link", applicationConfiguration.getApplicationLinks().get(0).getLinkName());
 		assertEquals("http://ci.wpetit.com/link", applicationConfiguration.getApplicationLinks().get(0).getLinkUrl());
