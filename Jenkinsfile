@@ -37,8 +37,9 @@ node {
 	stage 'Deploy'
 	sh 'mvn deploy'
 	def urlLatestVersion = getLatestVersion()
+	sh 'cp target/*.jar src/main/docker'
 	dir src/main/docker
-	sh 'sudo docker build --env VERSION=${v) --env BUILD=${urlLatestVersion} --env REPOSITORY=maven-snapshot -t project-home-generator .'
+	sh 'sudo docker build project-home-generator .'
 	sh 'sudo docker rm -f project-home-generator'
 	sh 'sudo docker run -d -p 20000:8080 --name project-home-generator'
 	
@@ -49,18 +50,4 @@ def version(text) {
   matcher ? matcher[0][1] : null
 }
 
-@NonCPS
-def getLatestVersion() {
-  // Repository location
-  def server="http://ci.wpetit.com/nexus/repository"
-  def repo="maven-snapshots"
-
-  // Maven artifact location
-  def name="project-home-generator"
-  def artifact="com/wpetit/project-home-generator"
-  def path=${server}+"/"+${repo}+"/"+${artifact}
-  def version=sh returnStdout: true, script: 'curl -s ${path}/maven-metadata.xml | grep /version | head -1 | sed "s/.*<version>\\([^<]*\\)<\\/version>.*/\\1/"'
-  def build=sh returnStdout: true, script: 'curl -s ${path}/${version}/maven-metadata.xml | grep '<value>' | head -1 | sed "s/.*<value>\([^<]*\)<\/value>.*/\1/"'
-  def latestVersionBuilt=${name}+"-"+${build}
-}
 	
