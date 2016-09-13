@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jayway.jsonpath.JsonPath;
+import com.wpetit.projecthome.generator.dto.ApacheConfigurationDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentLinkDto;
 import com.wpetit.projecthome.generator.dto.JenkinsConfigurationDto;
@@ -411,6 +412,13 @@ public class ProjectServiceIT {
 		linkDto.setImage("images/nexus.png");
 		final HttpEntity<LinkDto> linkEntity = new HttpEntity<>(linkDto);
 		restTemplate.exchange("/project-home-generator/project/{id}/link", HttpMethod.PUT, linkEntity, String.class,
+				projectId);
+
+		// add apache configuration
+		final ApacheConfigurationDto apacheConfigurationDto = new ApacheConfigurationDto();
+		apacheConfigurationDto.setUrl("http://ci.wpetit.com");
+		final HttpEntity<ApacheConfigurationDto> apacheEntity = new HttpEntity<>(apacheConfigurationDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/apache", HttpMethod.PUT, apacheEntity, String.class,
 				projectId);
 
 		// add jenkins configuration

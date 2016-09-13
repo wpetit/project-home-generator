@@ -3,6 +3,7 @@ package com.wpetit.projecthome.generator.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wpetit.projecthome.generator.business.ProjectBusiness;
 import com.wpetit.projecthome.generator.business.model.ApplicationConfiguration;
+import com.wpetit.projecthome.generator.dto.ApacheConfigurationDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentLinkDto;
 import com.wpetit.projecthome.generator.dto.JenkinsConfigurationDto;
@@ -23,6 +25,7 @@ import com.wpetit.projecthome.generator.dto.LinkDto;
 import com.wpetit.projecthome.generator.dto.ProjectDto;
 import com.wpetit.projecthome.generator.dto.SonarConfigurationDto;
 import com.wpetit.projecthome.generator.dto.ToolDto;
+import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 import com.wpetit.projecthome.generator.model.Environment;
 import com.wpetit.projecthome.generator.model.EnvironmentLink;
 import com.wpetit.projecthome.generator.model.JenkinsConfiguration;
@@ -96,6 +99,17 @@ public class ProjectService {
 	}
 
 	/**
+	 * Delete a project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	@RequestMapping(value = "{projectId}", method = RequestMethod.DELETE)
+	public void deleteProject(@PathVariable("projectId") final Long projectId) {
+		projectBusiness.deleteProject(projectId);
+	}
+
+	/**
 	 * Add an environment to a given project.
 	 *
 	 * @param projectId
@@ -122,6 +136,17 @@ public class ProjectService {
 	public List<EnvironmentDto> findEnvironmentsByProject(@PathVariable("projectId") final Long projectId) {
 		return projectBusiness.findAllEnvironments(projectId).stream().map(modelToDtoMapper::map)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Delete environment.
+	 *
+	 * @param envId
+	 *            the environment id
+	 */
+	@RequestMapping(value = "{projectId}/environment/{envId}", method = RequestMethod.DELETE)
+	public void deleteEnvironment(@PathVariable("envId") final Long envId) {
+		projectBusiness.deleteEnvironment(envId);
 	}
 
 	/**
@@ -156,6 +181,17 @@ public class ProjectService {
 	}
 
 	/**
+	 * Delete environment link.
+	 *
+	 * @param environmentLinkId
+	 *            the environmentLinkId
+	 */
+	@RequestMapping(value = "{projectId}/environment/{environmentId}/link/{environmentLinkId}", method = RequestMethod.DELETE)
+	public void deleteEnvironmentLink(@PathVariable("environmentLinkId") final Long environmentLinkId) {
+		projectBusiness.deleteEnvironmentLink(environmentLinkId);
+	}
+
+	/**
 	 * Add a tool to a given project.
 	 *
 	 * @param projectId
@@ -180,6 +216,17 @@ public class ProjectService {
 	@RequestMapping(value = "{projectId}/tool", method = RequestMethod.GET, produces = "application/json")
 	public List<ToolDto> findToolsByProject(@PathVariable("projectId") final Long projectId) {
 		return projectBusiness.findAllTools(projectId).stream().map(modelToDtoMapper::map).collect(Collectors.toList());
+	}
+
+	/**
+	 * Delete tool.
+	 *
+	 * @param toolId
+	 *            the link id
+	 */
+	@RequestMapping(value = "{projectId}/tool/{toolId}", method = RequestMethod.DELETE)
+	public void deleteTool(@PathVariable("toolId") final Long toolId) {
+		projectBusiness.deleteTool(toolId);
 	}
 
 	/**
@@ -210,6 +257,69 @@ public class ProjectService {
 	}
 
 	/**
+	 * Delete link.
+	 *
+	 * @param linkId
+	 *            the link id
+	 */
+	@RequestMapping(value = "{projectId}/link/{linkId}", method = RequestMethod.DELETE)
+	public void deleteLink(@PathVariable("linkId") final Long linkId) {
+		projectBusiness.deleteLink(linkId);
+	}
+
+	/**
+	 * Add an Apache configuration to a given project.
+	 *
+	 * @param projectId
+	 *            the project
+	 * @param apacheConfigurationDto
+	 *            the apacheConfiguration
+	 * @return the configuration saved
+	 */
+	@RequestMapping(value = "{projectId}/apache", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	public ApacheConfigurationDto addApacheConfiguration(@PathVariable("projectId") final Long projectId,
+			@Valid @RequestBody final ApacheConfigurationDto apacheConfigurationDto) {
+		final ApacheConfiguration apacheConfiguration = projectBusiness.addOrUpdateApacheConfiguration(projectId,
+				dtoToModelMapper.map(apacheConfigurationDto));
+		return modelToDtoMapper.map(apacheConfiguration);
+	}
+
+	/**
+	 * Update an Apache configuration to a given project.
+	 *
+	 * @param projectId
+	 *            the project
+	 * @param apacheConfigurationDto
+	 *            the apacheConfiguration
+	 * @return the configuration saved
+	 */
+	@RequestMapping(value = "{projectId}/apache/{apacheConfigurationId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ApacheConfigurationDto updateApacheConfiguration(@PathVariable("projectId") final Long projectId,
+			@Valid @RequestBody final ApacheConfigurationDto apacheConfigurationDto) {
+		final ApacheConfiguration apacheConfiguration = projectBusiness.addOrUpdateApacheConfiguration(projectId,
+				dtoToModelMapper.map(apacheConfigurationDto));
+		return modelToDtoMapper.map(apacheConfiguration);
+	}
+
+	/**
+	 * Get the apache configuration of the project.
+	 *
+	 * @param projectId
+	 *            the project
+	 * @return the apache configuration
+	 */
+	@RequestMapping(value = "{projectId}/apache", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<ApacheConfigurationDto> getApacheConfiguration(
+			@PathVariable("projectId") final Long projectId) {
+		final ApacheConfiguration apacheConfiguration = projectBusiness.getApacheConfiguration(projectId);
+		if (apacheConfiguration != null) {
+			return new ResponseEntity<>(modelToDtoMapper.map(apacheConfiguration), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	/**
 	 * Add a jenkins configuration to a given project.
 	 *
 	 * @param projectId
@@ -221,7 +331,24 @@ public class ProjectService {
 	@RequestMapping(value = "{projectId}/jenkins", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public JenkinsConfigurationDto addJenkinsConfiguration(@PathVariable("projectId") final Long projectId,
 			@Valid @RequestBody final JenkinsConfigurationDto jenkinsConfigurationDto) {
-		final JenkinsConfiguration jenkinsConfiguration = projectBusiness.addJenkinsConfiguration(projectId,
+		final JenkinsConfiguration jenkinsConfiguration = projectBusiness.addOrUpdateJenkinsConfiguration(projectId,
+				dtoToModelMapper.map(jenkinsConfigurationDto));
+		return modelToDtoMapper.map(jenkinsConfiguration);
+	}
+
+	/**
+	 * Update a jenkins configuration.
+	 *
+	 * @param projectId
+	 *            the project id
+	 * @param jenkinsConfigurationDto
+	 *            the jenkinsConfiguration
+	 * @return the configuration saved
+	 */
+	@RequestMapping(value = "{projectId}/jenkins/{jenkinsConfigurationId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public JenkinsConfigurationDto updateJenkinsConfiguration(@PathVariable("projectId") final Long projectId,
+			@Valid @RequestBody final JenkinsConfigurationDto jenkinsConfigurationDto) {
+		final JenkinsConfiguration jenkinsConfiguration = projectBusiness.addOrUpdateJenkinsConfiguration(projectId,
 				dtoToModelMapper.map(jenkinsConfigurationDto));
 		return modelToDtoMapper.map(jenkinsConfiguration);
 	}
@@ -256,7 +383,24 @@ public class ProjectService {
 	@RequestMapping(value = "{projectId}/sonar", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public SonarConfigurationDto addSonarConfiguration(@PathVariable("projectId") final Long projectId,
 			@Valid @RequestBody final SonarConfigurationDto sonarConfigurationDto) {
-		final SonarConfiguration sonarConfiguration = projectBusiness.addSonarConfiguration(projectId,
+		final SonarConfiguration sonarConfiguration = projectBusiness.addOrUpdateSonarConfiguration(projectId,
+				dtoToModelMapper.map(sonarConfigurationDto));
+		return modelToDtoMapper.map(sonarConfiguration);
+	}
+
+	/**
+	 * Update a sonar configuration.
+	 *
+	 * @param projectId
+	 *            the project id
+	 * @param sonarConfigurationDto
+	 *            the sonarConfiguration
+	 * @return the configuration saved
+	 */
+	@RequestMapping(value = "{projectId}/sonar/{sonarConfigurationId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public SonarConfigurationDto updateSonarConfiguration(@PathVariable("projectId") final Long projectId,
+			@Valid @RequestBody final SonarConfigurationDto sonarConfigurationDto) {
+		final SonarConfiguration sonarConfiguration = projectBusiness.addOrUpdateSonarConfiguration(projectId,
 				dtoToModelMapper.map(sonarConfigurationDto));
 		return modelToDtoMapper.map(sonarConfiguration);
 	}
@@ -284,10 +428,15 @@ public class ProjectService {
 	 *
 	 * @param projectId
 	 *            the project id
+	 * @param response
+	 *            the response of the request to set the content disposition in
+	 *            order to set the name and force download.
 	 * @return the configuration
 	 */
 	@RequestMapping(value = "{projectId}/conf", method = RequestMethod.GET, produces = "application/json")
-	public ApplicationConfiguration generateProjectConfiguration(@PathVariable("projectId") final Long projectId) {
+	public ApplicationConfiguration generateProjectConfiguration(@PathVariable("projectId") final Long projectId,
+			final HttpServletResponse response) {
+		response.setHeader("Content-Disposition", "attachment; filename=environment.json");
 		return projectBusiness.generateProjectConfiguration(projectId);
 	}
 

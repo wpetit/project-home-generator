@@ -6,6 +6,7 @@ package com.wpetit.projecthome.generator.services.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.wpetit.projecthome.generator.dto.ApacheConfigurationDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentLinkDto;
 import com.wpetit.projecthome.generator.dto.JenkinsConfigurationDto;
@@ -13,6 +14,7 @@ import com.wpetit.projecthome.generator.dto.LinkDto;
 import com.wpetit.projecthome.generator.dto.ProjectDto;
 import com.wpetit.projecthome.generator.dto.SonarConfigurationDto;
 import com.wpetit.projecthome.generator.dto.ToolDto;
+import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 import com.wpetit.projecthome.generator.model.Environment;
 import com.wpetit.projecthome.generator.model.EnvironmentLink;
 import com.wpetit.projecthome.generator.model.JenkinsConfiguration;
@@ -88,6 +90,16 @@ public interface DtoToModelMapper {
 	 */
 	@Mapping(target = "project", ignore = true)
 	JenkinsConfiguration map(JenkinsConfigurationDto jenkinsConfigurationDto);
+
+	/**
+	 * Map the {@link ApacheConfigurationDto} to {@link ApacheConfiguration}.
+	 *
+	 * @param apacheConfigurationDto
+	 *            the dto
+	 * @return the model
+	 */
+	@Mapping(target = "project", ignore = true)
+	ApacheConfiguration map(ApacheConfigurationDto apacheConfigurationDto);
 
 	/**
 	 * Map the {@link SonarConfigurationDto} to {@link SonarConfiguration}.

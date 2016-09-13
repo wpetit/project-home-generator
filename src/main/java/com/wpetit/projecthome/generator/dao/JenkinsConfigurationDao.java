@@ -22,4 +22,12 @@ public interface JenkinsConfigurationDao extends JpaRepository<JenkinsConfigurat
 	 * @return the jenkins configuration
 	 */
 	JenkinsConfiguration findByProjectId(Long projectId);
+
+	/**
+	 * Delete jenkins configuration related to the given project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByProjectId(Long projectId);
 }

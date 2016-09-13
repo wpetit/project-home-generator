@@ -26,4 +26,12 @@ public interface LinkDao extends JpaRepository<Link, Long> {
 	 */
 	List<Link> findByProjectId(Long projectId);
 
+	/**
+	 * Delete links related to the given project.
+	 * 
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByProjectId(Long projectId);
+
 }

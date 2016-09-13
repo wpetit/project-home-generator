@@ -216,7 +216,7 @@ public class ProjectServiceTest {
 				"http://example.org/jenkins", Arrays.asList("job1"), 1L);
 
 		given(dtoToModelMapper.map((JenkinsConfigurationDto) notNull())).willReturn(jenkinsConfiguration);
-		given(projectBusiness.addJenkinsConfiguration(eq(1L), (JenkinsConfiguration) notNull()))
+		given(projectBusiness.addOrUpdateJenkinsConfiguration(eq(1L), (JenkinsConfiguration) notNull()))
 				.willReturn(jenkinsConfiguration);
 		given(modelToDtoMapper.map(jenkinsConfiguration)).willReturn(jenkinsConfigurationDto);
 
@@ -242,7 +242,7 @@ public class ProjectServiceTest {
 				Arrays.asList("resource1"), 1L);
 
 		given(dtoToModelMapper.map((SonarConfigurationDto) notNull())).willReturn(sonarConfiguration);
-		given(projectBusiness.addSonarConfiguration(eq(1L), (SonarConfiguration) notNull()))
+		given(projectBusiness.addOrUpdateSonarConfiguration(eq(1L), (SonarConfiguration) notNull()))
 				.willReturn(sonarConfiguration);
 		given(modelToDtoMapper.map(sonarConfiguration)).willReturn(sonarConfigurationDto);
 

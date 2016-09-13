@@ -19,10 +19,18 @@ public interface EnvironmentDao extends JpaRepository<Environment, Long> {
 
 	/**
 	 * Find environments of the given project.
-	 * 
+	 *
 	 * @param projecId
 	 *            the project Id
 	 * @return the environments
 	 */
 	List<Environment> findByProjectId(Long projecId);
+
+	/**
+	 * Delete environments related to the given project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByProjectId(Long projectId);
 }

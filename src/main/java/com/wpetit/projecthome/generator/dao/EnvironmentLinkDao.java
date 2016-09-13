@@ -25,4 +25,20 @@ public interface EnvironmentLinkDao extends JpaRepository<EnvironmentLink, Long>
 	 * @return environmentLink found
 	 */
 	List<EnvironmentLink> findByEnvironmentId(Long environmentId);
+
+	/**
+	 * Delete environment links related to the given project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByEnvironmentProjectId(Long projectId);
+
+	/**
+	 * Delete environment links related to the given environment.
+	 * 
+	 * @param environmentId
+	 *            the environment id
+	 */
+	void deleteByEnvironmentId(Long environmentId);
 }

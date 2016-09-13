@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.wpetit.projecthome.generator.business.impl.ProjectBusinessImpl;
 import com.wpetit.projecthome.generator.business.model.ApplicationConfiguration;
+import com.wpetit.projecthome.generator.dao.ApacheConfigurationDao;
 import com.wpetit.projecthome.generator.dao.EnvironmentDao;
 import com.wpetit.projecthome.generator.dao.EnvironmentLinkDao;
 import com.wpetit.projecthome.generator.dao.JenkinsConfigurationDao;
@@ -27,6 +28,7 @@ import com.wpetit.projecthome.generator.dao.LinkDao;
 import com.wpetit.projecthome.generator.dao.ProjectDao;
 import com.wpetit.projecthome.generator.dao.SonarConfigurationDao;
 import com.wpetit.projecthome.generator.dao.ToolDao;
+import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 import com.wpetit.projecthome.generator.model.Environment;
 import com.wpetit.projecthome.generator.model.EnvironmentLink;
 import com.wpetit.projecthome.generator.model.JenkinsConfiguration;
@@ -67,6 +69,9 @@ public class ProjectBusinessImplTest {
 
 	@MockBean(name = "sonarConfigurationDao")
 	private SonarConfigurationDao sonarConfigurationDao;
+
+	@MockBean(name = "apacheConfigurationDao")
+	private ApacheConfigurationDao apacheConfigurationDao;
 
 	@Autowired
 	private ProjectBusinessImpl projectBusinessImpl;
@@ -163,7 +168,7 @@ public class ProjectBusinessImplTest {
 
 	/**
 	 * Test method for
-	 * {@link ProjectBusinessImpl#addJenkinsConfiguration(Long, com.wpetit.projecthome.generator.model.JenkinsConfiguration)}.
+	 * {@link ProjectBusinessImpl#addOrUpdateJenkinsConfiguration(Long, com.wpetit.projecthome.generator.model.JenkinsConfiguration)}.
 	 */
 	@Test
 	public void testAddJenkinsConfiguration() {
@@ -176,14 +181,15 @@ public class ProjectBusinessImplTest {
 		when(projectDao.findOne(1L)).thenReturn(project);
 		when(jenkinsConfigurationDao.saveAndFlush(jenkinsConfiguration)).thenReturn(jenkinsConfiguration);
 
-		assertEquals(jenkinsConfiguration, projectBusinessImpl.addJenkinsConfiguration(1L, jenkinsConfiguration));
+		assertEquals(jenkinsConfiguration,
+				projectBusinessImpl.addOrUpdateJenkinsConfiguration(1L, jenkinsConfiguration));
 		verify(projectDao).findOne(1L);
 		verify(jenkinsConfigurationDao).saveAndFlush(jenkinsConfiguration);
 	}
 
 	/**
 	 * Test method for
-	 * {@link ProjectBusinessImpl#addSonarConfiguration(Long, com.wpetit.projecthome.generator.model.SonarConfiguration)}.
+	 * {@link ProjectBusinessImpl#addOrUpdateSonarConfiguration(Long, com.wpetit.projecthome.generator.model.SonarConfiguration)}.
 	 */
 	@Test
 	public void testAddSonarConfiguration() {
@@ -196,7 +202,7 @@ public class ProjectBusinessImplTest {
 		when(projectDao.findOne(1L)).thenReturn(project);
 		when(sonarConfigurationDao.saveAndFlush(sonarConfiguration)).thenReturn(sonarConfiguration);
 
-		assertEquals(sonarConfiguration, projectBusinessImpl.addSonarConfiguration(1L, sonarConfiguration));
+		assertEquals(sonarConfiguration, projectBusinessImpl.addOrUpdateSonarConfiguration(1L, sonarConfiguration));
 		verify(projectDao).findOne(1L);
 		verify(sonarConfigurationDao).saveAndFlush(sonarConfiguration);
 	}
@@ -333,7 +339,9 @@ public class ProjectBusinessImplTest {
 				Arrays.asList("job"), project);
 		final SonarConfiguration sonarConfiguration = new SonarConfiguration(1L, "http://ci.wpetit.com/sonar",
 				Arrays.asList("res"), project);
+		final ApacheConfiguration apacheConfiguration = new ApacheConfiguration("http://ci.wpetit.com", project);
 
+		when(apacheConfigurationDao.findByProjectId(1L)).thenReturn(apacheConfiguration);
 		when(jenkinsConfigurationDao.findByProjectId(1L)).thenReturn(jenkinsConfiguration);
 		when(sonarConfigurationDao.findByProjectId(1L)).thenReturn(sonarConfiguration);
 		when(linkDao.findByProjectId(1L)).thenReturn(links);

@@ -19,11 +19,18 @@ public interface ToolDao extends JpaRepository<Tool, Long> {
 
 	/**
 	 * Find project tools.
-	 * 
+	 *
 	 * @param projectId
 	 *            the project Id
 	 * @return the tools found
 	 */
 	List<Tool> findByProjectId(Long projectId);
 
+	/**
+	 * Delete tools related to the given project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByProjectId(Long projectId);
 }

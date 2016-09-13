@@ -17,6 +17,7 @@ import com.wpetit.projecthome.generator.business.model.ApplicationLink;
 import com.wpetit.projecthome.generator.business.model.ApplicationTool;
 import com.wpetit.projecthome.generator.business.model.Env;
 import com.wpetit.projecthome.generator.business.model.EnvUrl;
+import com.wpetit.projecthome.generator.dao.ApacheConfigurationDao;
 import com.wpetit.projecthome.generator.dao.EnvironmentDao;
 import com.wpetit.projecthome.generator.dao.EnvironmentLinkDao;
 import com.wpetit.projecthome.generator.dao.JenkinsConfigurationDao;
@@ -24,6 +25,7 @@ import com.wpetit.projecthome.generator.dao.LinkDao;
 import com.wpetit.projecthome.generator.dao.ProjectDao;
 import com.wpetit.projecthome.generator.dao.SonarConfigurationDao;
 import com.wpetit.projecthome.generator.dao.ToolDao;
+import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 import com.wpetit.projecthome.generator.model.Environment;
 import com.wpetit.projecthome.generator.model.EnvironmentLink;
 import com.wpetit.projecthome.generator.model.JenkinsConfiguration;
@@ -69,6 +71,10 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 	/** The sonarConfigurationDao. **/
 	@Autowired
 	private SonarConfigurationDao sonarConfigurationDao;
+
+	/** The apacheConfigurationDao. **/
+	@Autowired
+	private ApacheConfigurationDao apacheConfigurationDao;
 
 	/** {@inheritDoc} **/
 	@Override
@@ -132,7 +138,7 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 
 	/** {@inheritDoc} **/
 	@Override
-	public JenkinsConfiguration addJenkinsConfiguration(final Long projectId,
+	public JenkinsConfiguration addOrUpdateJenkinsConfiguration(final Long projectId,
 			final JenkinsConfiguration jenkinsConfiguration) {
 		final Project project = projectDao.findOne(projectId);
 		jenkinsConfiguration.setProject(project);
@@ -189,16 +195,23 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 			});
 			applicationConfiguration.setEnv(envList);
 
+			final ApacheConfiguration apacheConfiguration = apacheConfigurationDao.findByProjectId(projectId);
+
 			final JenkinsConfiguration jenkinsConfiguration = jenkinsConfigurationDao.findByProjectId(projectId);
 			if (jenkinsConfiguration != null) {
-				applicationConfiguration.setJenkinsUrl(jenkinsConfiguration.getUrl());
+				if (apacheConfiguration != null) {
+					applicationConfiguration
+							.setJenkinsUrl(apacheConfiguration.getUrl().replaceAll("/$", "") + "/jenkins");
+				}
 				applicationConfiguration.setJenkinsJobs(jenkinsConfiguration.getJobsName());
 				applicationConfiguration.setJenkinsBase64UsrPwd("REPLACE_WITH BASE64(USER_JENKINS:PWD_JENKINS)");
 			}
 
 			final SonarConfiguration sonarConfiguration = sonarConfigurationDao.findByProjectId(projectId);
 			if (sonarConfiguration != null) {
-				applicationConfiguration.setSonarUrl(sonarConfiguration.getUrl());
+				if (apacheConfiguration != null) {
+					applicationConfiguration.setSonarUrl(apacheConfiguration.getUrl().replaceAll("/$", "") + "/sonar");
+				}
 				applicationConfiguration.setSonarResources(sonarConfiguration.getResourceNames());
 				applicationConfiguration.setSonarBase64UsrPwd("REPLACE_WITH BASE64(USER_SONAR:PWD_SONAR)");
 			}
@@ -229,10 +242,63 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 
 	/** {@inheritDoc} **/
 	@Override
-	public SonarConfiguration addSonarConfiguration(final Long projectId, final SonarConfiguration sonarConfiguration) {
+	public SonarConfiguration addOrUpdateSonarConfiguration(final Long projectId,
+			final SonarConfiguration sonarConfiguration) {
 		final Project project = projectDao.findOne(projectId);
 		sonarConfiguration.setProject(project);
 		return sonarConfigurationDao.saveAndFlush(sonarConfiguration);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public void deleteProject(final Long projectId) {
+		linkDao.deleteByProjectId(projectId);
+		toolDao.deleteByProjectId(projectId);
+		environmentLinkDao.deleteByEnvironmentProjectId(projectId);
+		environmentDao.deleteByProjectId(projectId);
+		jenkinsConfigurationDao.deleteByProjectId(projectId);
+		sonarConfigurationDao.deleteByProjectId(projectId);
+		projectDao.delete(projectId);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public ApacheConfiguration addOrUpdateApacheConfiguration(final Long projectId,
+			final ApacheConfiguration apacheConfiguration) {
+		final Project project = projectDao.findOne(projectId);
+		apacheConfiguration.setProject(project);
+		return apacheConfigurationDao.saveAndFlush(apacheConfiguration);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public ApacheConfiguration getApacheConfiguration(final Long projectId) {
+		return apacheConfigurationDao.findByProjectId(projectId);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public void deleteLink(final Long linkId) {
+		linkDao.delete(linkId);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public void deleteTool(final Long toolId) {
+		toolDao.delete(toolId);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public void deleteEnvironment(final Long environmentId) {
+		environmentLinkDao.deleteByEnvironmentId(environmentId);
+		environmentDao.delete(environmentId);
+	}
+
+	/** {@inheritDoc} **/
+	@Override
+	public void deleteEnvironmentLink(final Long environmentLinkId) {
+		environmentLinkDao.delete(environmentLinkId);
 	}
 
 }

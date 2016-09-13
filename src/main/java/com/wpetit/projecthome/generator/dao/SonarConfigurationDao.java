@@ -22,4 +22,12 @@ public interface SonarConfigurationDao extends JpaRepository<SonarConfiguration,
 	 * @return the sonar configuration
 	 */
 	SonarConfiguration findByProjectId(Long projectId);
+
+	/**
+	 * Delete sonar configuration related to the given project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByProjectId(Long projectId);
 }

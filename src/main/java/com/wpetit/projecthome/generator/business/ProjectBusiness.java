@@ -6,6 +6,7 @@ package com.wpetit.projecthome.generator.business;
 import java.util.List;
 
 import com.wpetit.projecthome.generator.business.model.ApplicationConfiguration;
+import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 import com.wpetit.projecthome.generator.model.Environment;
 import com.wpetit.projecthome.generator.model.EnvironmentLink;
 import com.wpetit.projecthome.generator.model.JenkinsConfiguration;
@@ -36,6 +37,14 @@ public interface ProjectBusiness {
 	 * @return the project
 	 */
 	Project addProject(Project project);
+
+	/**
+	 * Delete a project and related objects.
+	 *
+	 * @param id
+	 *            the project id
+	 */
+	void deleteProject(Long id);
 
 	/**
 	 * Add an environment.
@@ -107,14 +116,14 @@ public interface ProjectBusiness {
 	List<Tool> findAllTools(Long projectId);
 
 	/**
-	 * Add jenkinsConfiguration to project.
+	 * Add or update jenkinsConfiguration to project.
 	 *
 	 * @param projectId
 	 *            the project
 	 * @param jenkinsConfiguration
 	 * @return the jenkinsConfiguration saved.
 	 */
-	JenkinsConfiguration addJenkinsConfiguration(Long projectId, JenkinsConfiguration jenkinsConfiguration);
+	JenkinsConfiguration addOrUpdateJenkinsConfiguration(Long projectId, JenkinsConfiguration jenkinsConfiguration);
 
 	/**
 	 * Get the jenkins configuration of the project.
@@ -164,12 +173,65 @@ public interface ProjectBusiness {
 	SonarConfiguration getSonarConfiguration(Long projectId);
 
 	/**
-	 * Add sonarConfiguration to project.
+	 * Add or update sonarConfiguration to project.
 	 *
 	 * @param projectId
 	 *            the project
 	 * @param sonarConfiguration
-	 * @return the sonarConfiguration saved.
+	 * @return the sonarConfiguration saved
 	 */
-	SonarConfiguration addSonarConfiguration(Long projectId, SonarConfiguration sonarConfiguration);
+	SonarConfiguration addOrUpdateSonarConfiguration(Long projectId, SonarConfiguration sonarConfiguration);
+
+	/**
+	 * Add or update apacheConfiguration to project.
+	 *
+	 * @param projectId
+	 *            the project
+	 * @param apacheConfiguration
+	 *            the apache configuration
+	 * @return the apacheConfiguration saved
+	 */
+	ApacheConfiguration addOrUpdateApacheConfiguration(Long projectId, ApacheConfiguration apacheConfiguration);
+
+	/**
+	 * Get the apacheConfiguration of the project.
+	 *
+	 * @param projectId
+	 *            the project Id
+	 * @return the apache configuration
+	 */
+	ApacheConfiguration getApacheConfiguration(Long projectId);
+
+	/**
+	 * Delete the given link.
+	 *
+	 * @param linkId
+	 *            the link id
+	 */
+	void deleteLink(Long linkId);
+
+	/**
+	 * Delete the given tool.
+	 *
+	 * @param toolId
+	 *            the tool id
+	 */
+	void deleteTool(Long toolId);
+
+	/**
+	 * Delete the given environment.
+	 *
+	 * @param envId
+	 *            the environment id
+	 */
+	void deleteEnvironment(Long envId);
+
+	/**
+	 * Delete the given environment link.
+	 * 
+	 * @param environmentLinkId
+	 *            the environment link id
+	 */
+	void deleteEnvironmentLink(Long environmentLinkId);
+
 }
