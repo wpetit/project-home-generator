@@ -94,7 +94,20 @@ public class ProjectService {
 	 */
 	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public ProjectDto addProject(@RequestBody @Valid final ProjectDto projectDto) {
-		final Project project = projectBusiness.addProject(dtoToModelMapper.map(projectDto));
+		final Project project = projectBusiness.addOrUpdateProject(dtoToModelMapper.map(projectDto));
+		return modelToDtoMapper.map(project);
+	}
+
+	/**
+	 * Update a project.
+	 *
+	 * @param projectDto
+	 *            the project
+	 * @return the project updated
+	 */
+	@RequestMapping(value = "{projectId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ProjectDto updateProject(@RequestBody @Valid final ProjectDto projectDto) {
+		final Project project = projectBusiness.addOrUpdateProject(dtoToModelMapper.map(projectDto));
 		return modelToDtoMapper.map(project);
 	}
 

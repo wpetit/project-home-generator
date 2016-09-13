@@ -84,7 +84,7 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 
 	/** {@inheritDoc} **/
 	@Override
-	public Project addProject(final Project project) {
+	public Project addOrUpdateProject(final Project project) {
 		return projectDao.saveAndFlush(project);
 	}
 

@@ -30,13 +30,13 @@ public interface ProjectBusiness {
 	List<Project> findAll();
 
 	/**
-	 * Add a project.
+	 * Add or update a project.
 	 *
 	 * @param project
 	 *            the project
 	 * @return the project
 	 */
-	Project addProject(Project project);
+	Project addOrUpdateProject(Project project);
 
 	/**
 	 * Delete a project and related objects.
@@ -228,7 +228,7 @@ public interface ProjectBusiness {
 
 	/**
 	 * Delete the given environment link.
-	 * 
+	 *
 	 * @param environmentLinkId
 	 *            the environment link id
 	 */

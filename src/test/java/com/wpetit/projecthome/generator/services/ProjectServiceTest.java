@@ -194,7 +194,7 @@ public class ProjectServiceTest {
 		final ProjectDto projectDto1 = new ProjectDto(1L, "name1", "image1");
 
 		given(dtoToModelMapper.map((ProjectDto) notNull())).willReturn(project1);
-		given(projectBusiness.addProject((Project) notNull())).willReturn(project1);
+		given(projectBusiness.addOrUpdateProject((Project) notNull())).willReturn(project1);
 		given(modelToDtoMapper.map(project1)).willReturn(projectDto1);
 
 		mvc.perform(put("/project").content("{\"name\":\"name1\", \"image\":\"image1\"}")

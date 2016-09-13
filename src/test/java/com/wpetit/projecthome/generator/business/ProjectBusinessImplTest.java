@@ -77,14 +77,14 @@ public class ProjectBusinessImplTest {
 	private ProjectBusinessImpl projectBusinessImpl;
 
 	/**
-	 * Test method for {@link ProjectBusinessImpl#addProject(Project)}.
+	 * Test method for {@link ProjectBusinessImpl#addOrUpdateProject(Project)}.
 	 */
 	@Test
 	public void testAddProject() {
 		final Project project = new Project();
 		project.setName("test");
 		when(projectDao.saveAndFlush(project)).thenReturn(project);
-		assertEquals(project, projectBusinessImpl.addProject(project));
+		assertEquals(project, projectBusinessImpl.addOrUpdateProject(project));
 		verify(projectDao).saveAndFlush(project);
 	}
 
