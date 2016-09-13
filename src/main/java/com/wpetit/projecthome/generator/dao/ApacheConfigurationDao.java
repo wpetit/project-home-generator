@@ -16,10 +16,18 @@ import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 public interface ApacheConfigurationDao extends JpaRepository<ApacheConfiguration, Long> {
 	/**
 	 * Return the apache configuration of the given project.
-	 * 
+	 *
 	 * @param projectId
 	 *            the project id
 	 * @return the apache configuration
 	 */
 	ApacheConfiguration findByProjectId(Long projectId);
+
+	/**
+	 * Delete apache configuration related to the given project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 */
+	void deleteByProjectId(Long projectId);
 }

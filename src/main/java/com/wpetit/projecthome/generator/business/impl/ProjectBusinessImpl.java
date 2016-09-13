@@ -256,6 +256,7 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 		toolDao.deleteByProjectId(projectId);
 		environmentLinkDao.deleteByEnvironmentProjectId(projectId);
 		environmentDao.deleteByProjectId(projectId);
+		apacheConfigurationDao.deleteByProjectId(projectId);
 		jenkinsConfigurationDao.deleteByProjectId(projectId);
 		sonarConfigurationDao.deleteByProjectId(projectId);
 		projectDao.delete(projectId);
