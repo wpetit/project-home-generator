@@ -198,7 +198,8 @@ public class ProjectServiceTest {
 		given(modelToDtoMapper.map(project1)).willReturn(projectDto1);
 
 		mvc.perform(put("/project").content("{\"name\":\"name1\", \"image\":\"image1\"}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
 				.andExpect(content().json("{\"name\":\"name1\", \"image\":\"image1\", \"id\":1}"));
 	}
 
@@ -222,8 +223,8 @@ public class ProjectServiceTest {
 
 		mvc.perform(put("/project/{id}/jenkins", 1)
 				.content("{\"jobsName\":[\"job1\"], \"url\":\"http://example.org/jenkins\"}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(
 						content().json("{\"jobsName\":[\"job1\"], \"url\":\"http://example.org/jenkins\", \"id\":1}"));
 	}
 
@@ -248,8 +249,8 @@ public class ProjectServiceTest {
 
 		mvc.perform(put("/project/{id}/sonar", 1)
 				.content("{\"resourceNames\":[\"resource1\"], \"url\":\"http://example.org/sonar\"}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content()
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(content()
 						.json("{\"resourceNames\":[\"resource1\"], \"url\":\"http://example.org/sonar\", \"id\":1}"));
 	}
 
@@ -270,8 +271,8 @@ public class ProjectServiceTest {
 		mvc.perform(put("/project/{id}/link", 1)
 				.content(
 						"{\"name\":\"name1\", \"url\":\"http://example.org/link\", \"image\":\"image1\", \"projectId\":1}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().json(
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(content().json(
 						"{\"name\":\"name1\", \"url\":\"http://example.org/link\", \"image\":\"image1\", \"id\":1, \"projectId\":1}"));
 	}
 
@@ -303,8 +304,8 @@ public class ProjectServiceTest {
 
 		mvc.perform(put("/project/{id}/tool", 1)
 				.content("{\"name\":\"name1\", \"url\":\"http://example.org/tool\", \"projectId\":1}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content()
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(content()
 						.json("{\"name\":\"name1\", \"url\":\"http://example.org/tool\", \"id\":1, \"projectId\":1}"));
 	}
 
@@ -326,7 +327,8 @@ public class ProjectServiceTest {
 		given(modelToDtoMapper.map(environment1)).willReturn(environmentDto);
 
 		mvc.perform(put("/project/{id}/environment", 1).content("{\"name\":\"name1\", \"projectId\":1}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
 				.andExpect(content().json("{\"name\":\"name1\", \"id\":1, \"projectId\":1}"));
 	}
 
@@ -347,8 +349,8 @@ public class ProjectServiceTest {
 
 		mvc.perform(put("/project/{id}/environment/1/link", 1)
 				.content("{\"name\":\"link1\",\"url\":\"http://example.org\", \"environmentId\":1}")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content()
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(content()
 						.json("{\"name\":\"link1\", \"id\":1, \"url\":\"http://example.org\", \"environmentId\":1}"));
 	}
 
