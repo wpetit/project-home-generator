@@ -81,6 +81,28 @@ public class ProjectServiceIT {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#updateProject(ProjectDto)}.
+	 */
+	@Test
+	public void testUpdateProject() {
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> entity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, entity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		projectDto.setName("my-project-renamed");
+		final HttpEntity<ProjectDto> postEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}",
+				HttpMethod.POST, postEntity, String.class, projectId);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		final String expected = "{name:\"my-project-renamed\"}";
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
 	 * Test method for {@link ProjectService#getProject(Long)} with unknown
 	 * project.
 	 */
@@ -91,6 +113,28 @@ public class ProjectServiceIT {
 		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}",
 				String.class, projectId);
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteProject(Long)}.
+	 */
+	@Test
+	public void testDeleteProject() {
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> entity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, entity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}",
+				HttpMethod.DELETE, null, String.class, projectId);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		final ResponseEntity<String> responseGet = restTemplate.exchange("/project-home-generator/project/{id}",
+				HttpMethod.GET, null, String.class, projectId);
+		assertEquals(HttpStatus.NOT_FOUND, responseGet.getStatusCode());
 	}
 
 	/**
@@ -389,6 +433,41 @@ public class ProjectServiceIT {
 		final String expected = "{\"name\":\"env1\",\"projectId\":" + projectId + "}";
 
 		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteEnvironment(Long)}.
+	 */
+	@Test
+	public void testDeleteEnvironment() {
+		// create project
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> projectEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, projectEntity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		// add environment
+		final EnvironmentDto environmentDto = new EnvironmentDto();
+		environmentDto.setName("env1");
+		final HttpEntity<EnvironmentDto> entity = new HttpEntity<>(environmentDto);
+		final ResponseEntity<String> environmentResponse = restTemplate.exchange(
+				"/project-home-generator/project/{id}/environment", HttpMethod.PUT, entity, String.class, projectId);
+
+		final Integer environmentId = JsonPath.read(environmentResponse.getBody(), "$.id");
+
+		// delete environment
+		final ResponseEntity<String> response = restTemplate.exchange(
+				"/project-home-generator/project/{id}/environment/{environmentId}", HttpMethod.DELETE, entity,
+				String.class, projectId, environmentId);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		final ResponseEntity<String> responseGet = restTemplate.exchange(
+				"/project-home-generator/project/{id}/environment", HttpMethod.GET, null, String.class, projectId);
+		assertEquals(HttpStatus.OK, responseGet.getStatusCode());
+		JSONAssert.assertEquals("[]", responseGet.getBody(), false);
 	}
 
 	/**
