@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wpetit.projecthome.generator.business.ProjectBusiness;
@@ -93,6 +94,7 @@ public class ProjectService {
 	 * @return the project saved
 	 */
 	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public ProjectDto addProject(@RequestBody @Valid final ProjectDto projectDto) {
 		final Project project = projectBusiness.addOrUpdateProject(dtoToModelMapper.map(projectDto));
 		return modelToDtoMapper.map(project);
@@ -132,6 +134,7 @@ public class ProjectService {
 	 * @return the environment saved
 	 */
 	@RequestMapping(value = "{projectId}/environment", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public EnvironmentDto addEnvironment(@PathVariable("projectId") final Long projectId,
 			@Valid @RequestBody final EnvironmentDto environmentDto) {
 		final Environment environment = projectBusiness.addEnvironment(projectId, dtoToModelMapper.map(environmentDto));
@@ -172,6 +175,7 @@ public class ProjectService {
 	 * @return the environmentLink saved
 	 */
 	@RequestMapping(value = "{projectId}/environment/{environmentId}/link", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public EnvironmentLinkDto addEnvironmentLink(@PathVariable("environmentId") final Long environmentId,
 			@Valid @RequestBody final EnvironmentLinkDto environmentLinkDto) {
 		final EnvironmentLink environmentLink = projectBusiness.addEnvironmentLink(environmentId,
@@ -214,6 +218,7 @@ public class ProjectService {
 	 * @return the tool saved
 	 */
 	@RequestMapping(value = "{projectId}/tool", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public ToolDto addTool(@PathVariable("projectId") final Long projectId, @Valid @RequestBody final ToolDto toolDto) {
 		final Tool tool = projectBusiness.addTool(projectId, dtoToModelMapper.map(toolDto));
 		return modelToDtoMapper.map(tool);
@@ -252,6 +257,7 @@ public class ProjectService {
 	 * @return the link saved
 	 */
 	@RequestMapping(value = "{projectId}/link", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public LinkDto addLink(@PathVariable("projectId") final Long projectId, @Valid @RequestBody final LinkDto linkDto) {
 		final Link link = projectBusiness.addLink(projectId, dtoToModelMapper.map(linkDto));
 		return modelToDtoMapper.map(link);
@@ -290,6 +296,7 @@ public class ProjectService {
 	 * @return the configuration saved
 	 */
 	@RequestMapping(value = "{projectId}/apache", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public ApacheConfigurationDto addApacheConfiguration(@PathVariable("projectId") final Long projectId,
 			@Valid @RequestBody final ApacheConfigurationDto apacheConfigurationDto) {
 		final ApacheConfiguration apacheConfiguration = projectBusiness.addOrUpdateApacheConfiguration(projectId,
@@ -342,6 +349,7 @@ public class ProjectService {
 	 * @return the configuration saved
 	 */
 	@RequestMapping(value = "{projectId}/jenkins", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public JenkinsConfigurationDto addJenkinsConfiguration(@PathVariable("projectId") final Long projectId,
 			@Valid @RequestBody final JenkinsConfigurationDto jenkinsConfigurationDto) {
 		final JenkinsConfiguration jenkinsConfiguration = projectBusiness.addOrUpdateJenkinsConfiguration(projectId,
@@ -394,6 +402,7 @@ public class ProjectService {
 	 * @return the configuration saved
 	 */
 	@RequestMapping(value = "{projectId}/sonar", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public SonarConfigurationDto addSonarConfiguration(@PathVariable("projectId") final Long projectId,
 			@Valid @RequestBody final SonarConfigurationDto sonarConfigurationDto) {
 		final SonarConfiguration sonarConfiguration = projectBusiness.addOrUpdateSonarConfiguration(projectId,

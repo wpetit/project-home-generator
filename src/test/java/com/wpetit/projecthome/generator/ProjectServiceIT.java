@@ -55,7 +55,7 @@ public class ProjectServiceIT {
 		final HttpEntity<ProjectDto> entity = new HttpEntity<>(projectDto);
 		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project", HttpMethod.PUT,
 				entity, String.class);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{name:\"my-project\"}";
 		JSONAssert.assertEquals(expected, response.getBody(), false);
 	}
@@ -115,7 +115,7 @@ public class ProjectServiceIT {
 		final HttpEntity<JenkinsConfigurationDto> entity = new HttpEntity<>(jenkinsConfigurationDto);
 		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}/jenkins",
 				HttpMethod.PUT, entity, String.class, projectId);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{\"url\":\"http://ci.wpetit.com/jenkins\",\"jobsName\":[\"job1\"],\"projectId\":"
 				+ projectId + "}";
 
@@ -189,7 +189,7 @@ public class ProjectServiceIT {
 		final HttpEntity<SonarConfigurationDto> entity = new HttpEntity<>(sonarConfigurationDto);
 		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}/sonar",
 				HttpMethod.PUT, entity, String.class, projectId);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{\"url\":\"http://ci.wpetit.com/sonar\",\"resourceNames\":[\"res1\"],\"projectId\":"
 				+ projectId + "}";
 
@@ -260,7 +260,7 @@ public class ProjectServiceIT {
 		final HttpEntity<ToolDto> entity = new HttpEntity<>(toolDto);
 		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}/tool",
 				HttpMethod.PUT, entity, String.class, projectId);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{\"url\":\"http://ci.wpetit.com/nexus\",\"name\":\"Nexus\",\"projectId\":" + projectId
 				+ "}";
 
@@ -289,7 +289,7 @@ public class ProjectServiceIT {
 		final HttpEntity<LinkDto> entity = new HttpEntity<>(linkDto);
 		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}/link",
 				HttpMethod.PUT, entity, String.class, projectId);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{\"url\":\"http://ci.wpetit.com/link\",\"name\":\"link1\", \"image\":\"http://ci.wpetit.com/link.png\",\"projectId\":"
 				+ projectId + "}";
 
@@ -317,7 +317,7 @@ public class ProjectServiceIT {
 		final HttpEntity<EnvironmentDto> entity = new HttpEntity<>(environmentDto);
 		final ResponseEntity<String> response = restTemplate.exchange(
 				"/project-home-generator/project/{id}/environment", HttpMethod.PUT, entity, String.class, projectId);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{\"name\":\"env1\",\"projectId\":" + projectId + "}";
 
 		JSONAssert.assertEquals(expected, response.getBody(), false);
@@ -357,7 +357,7 @@ public class ProjectServiceIT {
 				"/project-home-generator/project/{id}/environment/{environmentId}/link", HttpMethod.PUT, entity,
 				String.class, projectId, environmentId);
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		final String expected = "{\"name\":\"envLink1\",\"url\":\"http://ci.wpetit.com/envLink1\",\"environmentId\":"
 				+ environmentId + "}";
 
