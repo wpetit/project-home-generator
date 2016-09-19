@@ -208,6 +208,75 @@ public class ProjectBusinessImplTest {
 	}
 
 	/**
+	 * Test method for
+	 * {@link ProjectBusinessImpl#addOrUpdateApacheConfiguration(Long, ApacheConfiguration)}.
+	 */
+	@Test
+	public void testAddApacheConfiguration() {
+		final Project project = new Project();
+		final ApacheConfiguration apacheConfiguration = new ApacheConfiguration();
+		apacheConfiguration.setUrl("http://ci.wpetit.com");
+		apacheConfiguration.setProject(project);
+
+		when(projectDao.findOne(1L)).thenReturn(project);
+		when(apacheConfigurationDao.saveAndFlush(apacheConfiguration)).thenReturn(apacheConfiguration);
+
+		assertEquals(apacheConfiguration, projectBusinessImpl.addOrUpdateApacheConfiguration(1L, apacheConfiguration));
+		verify(projectDao).findOne(1L);
+		verify(apacheConfigurationDao).saveAndFlush(apacheConfiguration);
+	}
+
+	/**
+	 * Test method for {@link ProjectBusinessImpl#deleteProject(Long)}.
+	 */
+	@Test
+	public void testDeleteProject() {
+		projectBusinessImpl.deleteProject(1L);
+		verify(sonarConfigurationDao).deleteByProjectId(1L);
+		verify(jenkinsConfigurationDao).deleteByProjectId(1L);
+		verify(apacheConfigurationDao).deleteByProjectId(1L);
+		verify(environmentLinkDao).deleteByEnvironmentProjectId(1L);
+		verify(environmentDao).deleteByProjectId(1L);
+		verify(linkDao).deleteByProjectId(1L);
+		verify(toolDao).deleteByProjectId(1L);
+		verify(projectDao).delete(1L);
+	}
+
+	/**
+	 * Test method for {@link ProjectBusinessImpl#deleteEnvironment(Long)}.
+	 */
+	@Test
+	public void testDeleteEnvironment() {
+		projectBusinessImpl.deleteEnvironment(1L);
+		verify(environmentLinkDao).deleteByEnvironmentId(1L);
+		verify(environmentDao).delete(1L);
+	}
+
+	/**
+	 * Test method for {@link ProjectBusinessImpl#deleteEnvironmentLink(Long)}.
+	 */
+	public void testDeleteEnvironmentLink() {
+		projectBusinessImpl.deleteEnvironmentLink(1L);
+		verify(environmentLinkDao).delete(1L);
+	}
+
+	/**
+	 * Test method for {@link ProjectBusinessImpl#deleteLink(Long)}.
+	 */
+	public void testDeleteLink() {
+		projectBusinessImpl.deleteLink(1L);
+		verify(linkDao).delete(1L);
+	}
+
+	/**
+	 * Test method for {@link ProjectBusinessImpl#deleteTool(Long)}.
+	 */
+	public void testDeleteTool() {
+		projectBusinessImpl.deleteTool(1L);
+		verify(toolDao).delete(1L);
+	}
+
+	/**
 	 * Test method for {@link ProjectBusinessImpl#findAll()}.
 	 */
 	@Test
@@ -303,6 +372,19 @@ public class ProjectBusinessImplTest {
 
 		assertEquals(sonarConfiguration, projectBusinessImpl.getSonarConfiguration(1L));
 		verify(sonarConfigurationDao).findByProjectId(1L);
+	}
+
+	/**
+	 * Test method for {@link ProjectBusinessImpl#getApacheConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetApacheConfiguration() {
+		final ApacheConfiguration apacheConfiguration = new ApacheConfiguration();
+
+		when(apacheConfigurationDao.findByProjectId(1L)).thenReturn(apacheConfiguration);
+
+		assertEquals(apacheConfiguration, projectBusinessImpl.getApacheConfiguration(1L));
+		verify(apacheConfigurationDao).findByProjectId(1L);
 	}
 
 	/**

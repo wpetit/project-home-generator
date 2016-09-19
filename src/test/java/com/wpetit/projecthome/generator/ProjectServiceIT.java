@@ -169,6 +169,74 @@ public class ProjectServiceIT {
 
 	/**
 	 * Test method for
+	 * {@link ProjectService#addApacheConfiguration(Long, ApacheConfigurationDto)}.
+	 */
+	@Test
+	public void testAddApacheConfiguration() {
+		// create project
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> projectEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, projectEntity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		// add apache conf
+		final ApacheConfigurationDto apacheConfigurationDto = new ApacheConfigurationDto();
+		apacheConfigurationDto.setUrl("http://ci.wpetit.com");
+		final HttpEntity<ApacheConfigurationDto> entity = new HttpEntity<>(apacheConfigurationDto);
+		final ResponseEntity<String> response = restTemplate.exchange("/project-home-generator/project/{id}/apache",
+				HttpMethod.PUT, entity, String.class, projectId);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		final String expected = "{\"url\":\"http://ci.wpetit.com\",\"projectId\":" + projectId + "}";
+
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
+	 * Test method for {@link ProjectService#getApacheConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetApacheConfiguration() {
+		// create project
+		final ProjectDto projectDto = new ProjectDto();
+		projectDto.setName("my-project");
+		final HttpEntity<ProjectDto> projectEntity = new HttpEntity<>(projectDto);
+		final ResponseEntity<String> projectResponse = restTemplate.exchange("/project-home-generator/project",
+				HttpMethod.PUT, projectEntity, String.class);
+
+		final Integer projectId = JsonPath.read(projectResponse.getBody(), "$.id");
+
+		// add apache conf
+		final ApacheConfigurationDto apacheConfigurationDto = new ApacheConfigurationDto();
+		apacheConfigurationDto.setUrl("http://ci.wpetit.com");
+		final HttpEntity<ApacheConfigurationDto> entity = new HttpEntity<>(apacheConfigurationDto);
+		restTemplate.exchange("/project-home-generator/project/{id}/apache", HttpMethod.PUT, entity, String.class,
+				projectId);
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}/apache",
+				String.class, projectId);
+
+		final String expected = "{\"url\":\"http://ci.wpetit.com\",\"projectId\":" + projectId + "}";
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+	}
+
+	/**
+	 * Test method for {@link ProjectService#getApacheConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetApacheConfigurationUnknownProject() {
+		final Integer projectId = 99000;
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}/apache",
+				String.class, projectId);
+
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	/**
+	 * Test method for
 	 * {@link ProjectService#addSonarConfiguration(Long, SonarConfigurationDto)}.
 	 */
 	@Test
