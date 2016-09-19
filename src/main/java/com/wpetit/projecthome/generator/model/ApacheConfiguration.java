@@ -26,6 +26,9 @@ public class ApacheConfiguration {
 	/** The url. **/
 	@URL
 	private String url;
+	/** The project. **/
+	@OneToOne
+	private Project project;
 
 	/**
 	 * ApacheConfiguration constructor.
@@ -104,7 +107,4 @@ public class ApacheConfiguration {
 		this.project = project;
 	}
 
-	/** The project. **/
-	@OneToOne
-	private Project project;
 }
