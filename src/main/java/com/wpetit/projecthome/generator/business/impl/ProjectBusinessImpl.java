@@ -154,9 +154,10 @@ public class ProjectBusinessImpl implements ProjectBusiness {
 	/** {@inheritDoc} **/
 	@Override
 	public ApplicationConfiguration generateProjectConfiguration(final Long projectId) {
-		final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+		ApplicationConfiguration applicationConfiguration = null;
 		final Project project = projectDao.findOne(projectId);
 		if (project != null) {
+			applicationConfiguration = new ApplicationConfiguration();
 			applicationConfiguration.setApplicationName(project.getName());
 			applicationConfiguration.setApplicationLogo(project.getImage());
 

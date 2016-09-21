@@ -6,7 +6,9 @@ package com.wpetit.projecthome.generator.services;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.notNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +17,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,6 +31,7 @@ import com.wpetit.projecthome.generator.business.model.ApplicationLink;
 import com.wpetit.projecthome.generator.business.model.ApplicationTool;
 import com.wpetit.projecthome.generator.business.model.Env;
 import com.wpetit.projecthome.generator.business.model.EnvUrl;
+import com.wpetit.projecthome.generator.dto.ApacheConfigurationDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentDto;
 import com.wpetit.projecthome.generator.dto.EnvironmentLinkDto;
 import com.wpetit.projecthome.generator.dto.JenkinsConfigurationDto;
@@ -35,6 +39,7 @@ import com.wpetit.projecthome.generator.dto.LinkDto;
 import com.wpetit.projecthome.generator.dto.ProjectDto;
 import com.wpetit.projecthome.generator.dto.SonarConfigurationDto;
 import com.wpetit.projecthome.generator.dto.ToolDto;
+import com.wpetit.projecthome.generator.model.ApacheConfiguration;
 import com.wpetit.projecthome.generator.model.Environment;
 import com.wpetit.projecthome.generator.model.EnvironmentLink;
 import com.wpetit.projecthome.generator.model.JenkinsConfiguration;
@@ -255,6 +260,30 @@ public class ProjectServiceTest {
 	}
 
 	/**
+	 * Test method for
+	 * {@link ProjectService#addApacheConfiguration(Long, SonarConfigurationDto)}.
+	 */
+	@Test
+	public void testAddApacheConfiguration() throws Exception {
+		final Project project1 = new Project(1L, "name1", "image1");
+
+		final ApacheConfiguration apacheConfiguration = new ApacheConfiguration("http://example.org", project1);
+		apacheConfiguration.setId(1L);
+
+		final ApacheConfigurationDto apacheConfigurationDto = new ApacheConfigurationDto(1L, "http://example.org", 1L);
+
+		given(dtoToModelMapper.map((ApacheConfigurationDto) notNull())).willReturn(apacheConfiguration);
+		given(projectBusiness.addOrUpdateApacheConfiguration(eq(1L), (ApacheConfiguration) notNull()))
+				.willReturn(apacheConfiguration);
+		given(modelToDtoMapper.map(apacheConfiguration)).willReturn(apacheConfigurationDto);
+
+		mvc.perform(put("/project/{id}/apache", 1).content("{\"url\":\"http://example.org\"}")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(content().json("{\"url\":\"http://example.org\", \"id\":1}"));
+	}
+
+	/**
 	 * Test method for {@link ProjectService#addLink(Long, LinkDto)}.
 	 */
 	@Test
@@ -395,6 +424,24 @@ public class ProjectServiceTest {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#getSonarConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetApacheConfiguration() throws Exception {
+		final Project project1 = new Project(1L, "name1", "image1");
+		final ApacheConfiguration apacheConfiguration = new ApacheConfiguration("http://example.org", project1);
+		apacheConfiguration.setId(1L);
+
+		given(projectBusiness.getApacheConfiguration(1L)).willReturn(apacheConfiguration);
+
+		final ApacheConfigurationDto apacheConfigurationDto = new ApacheConfigurationDto(1L, "http://example.org", 1L);
+		given(modelToDtoMapper.map(apacheConfiguration)).willReturn(apacheConfigurationDto);
+
+		mvc.perform(get("/project/{id}/apache", 1L).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json("{\"url\":\"http://example.org\", \"id\":1}"));
+	}
+
+	/**
 	 * Test method for
 	 * {@link ProjectService#generateProjectConfiguration(Long)}.
 	 */
@@ -423,6 +470,68 @@ public class ProjectServiceTest {
 								+ "\"jenkinsUrl\":\"http://ci.wpetit.com/jenkins\",\"jenkinsBase64UsrPwd\":\"REPLACE_WITH BASE64(USER_JENKINS:PWD_JENKINS)\","
 								+ "\"sonarBase64UsrPwd\":\"REPLACE_WITH BASE64(USER_SONAR:PWD_SONAR)\",\"sonarUrl\":\"http://ci.wpetit.com/sonar\","
 								+ "\"jenkinsJobs\":[\"project-home-generator\"],\"sonarResources\":[\"com.wpetit:project-home-generator\"]}"));
+	}
+
+	/**
+	 * Test method for {@link ProjectService#updateProject(ProjectDto)}.
+	 */
+	@Test
+	public void testUpdateProject() throws Exception {
+		final Project project1 = new Project(1L, "name1", "image1");
+		final ProjectDto projectDto1 = new ProjectDto(1L, "name2", "image1");
+
+		given(dtoToModelMapper.map((ProjectDto) notNull())).willReturn(project1);
+		given(projectBusiness.addOrUpdateProject((Project) notNull())).willReturn(project1);
+		given(modelToDtoMapper.map(project1)).willReturn(projectDto1);
+
+		mvc.perform(post("/project/1").content("{\"id\":1,\"name\":\"name2\", \"image\":\"image1\"}")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json("{\"id\":1,\"name\":\"name2\", \"image\":\"image1\"}"));
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteProject(Long)}.
+	 */
+	@Test
+	public void testDeleteProject() throws Exception {
+		BDDMockito.willDoNothing().given(projectBusiness).deleteProject(1L);
+		mvc.perform(delete("/project/1")).andExpect(status().isOk());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteEnvironment(Long)}.
+	 */
+	@Test
+	public void testDeleteEnvironment() throws Exception {
+		BDDMockito.willDoNothing().given(projectBusiness).deleteEnvironment(1L);
+		mvc.perform(delete("/project/1/environment/1")).andExpect(status().isOk());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteEnvironmentLink(Long)}.
+	 */
+	@Test
+	public void testDeleteEnvironmentLink() throws Exception {
+		BDDMockito.willDoNothing().given(projectBusiness).deleteEnvironmentLink(1L);
+		mvc.perform(delete("/project/1/environment/1/link/1")).andExpect(status().isOk());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteTool(Long)}.
+	 */
+	@Test
+	public void testDeleteTool() throws Exception {
+		BDDMockito.willDoNothing().given(projectBusiness).deleteTool(1L);
+		mvc.perform(delete("/project/1/tool/1")).andExpect(status().isOk());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#deleteLink(Long)}.
+	 */
+	@Test
+	public void testDeleteLink() throws Exception {
+		BDDMockito.willDoNothing().given(projectBusiness).deleteLink(1L);
+		mvc.perform(delete("/project/1/link/1")).andExpect(status().isOk());
 	}
 
 }

@@ -21,6 +21,29 @@ public class ApacheConfigurationDto {
 	private Long projectId;
 
 	/**
+	 * ApacheConfigurationDto constructor.
+	 */
+	public ApacheConfigurationDto() {
+		// default constructor
+	}
+
+	/**
+	 * ApacheConfigurationDto constructor.
+	 *
+	 * @param id
+	 *            the id
+	 * @param url
+	 *            the url
+	 * @param projectId
+	 *            the projectId
+	 */
+	public ApacheConfigurationDto(final Long id, final String url, final Long projectId) {
+		this.id = id;
+		this.url = url;
+		this.projectId = projectId;
+	}
+
+	/**
 	 * Return the id.
 	 *
 	 * @return the id
@@ -60,7 +83,7 @@ public class ApacheConfigurationDto {
 
 	/**
 	 * Return the projectId.
-	 * 
+	 *
 	 * @return the projectId
 	 */
 	public Long getProjectId() {
@@ -69,7 +92,7 @@ public class ApacheConfigurationDto {
 
 	/**
 	 * Set the projectId.
-	 * 
+	 *
 	 * @param projectId
 	 *            the projectId to set
 	 */

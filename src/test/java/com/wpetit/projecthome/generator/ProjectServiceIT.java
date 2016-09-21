@@ -599,6 +599,20 @@ public class ProjectServiceIT {
 
 	/**
 	 * Test method for {@link ProjectService#generateProjectConfiguration(Long)}
+	 * with unknown project.
+	 */
+	@Test
+	public void testGenerateProjectConfigurationWithUnknownProject() throws Exception {
+		final Integer projectId = 99000;
+
+		final ResponseEntity<String> response = restTemplate.getForEntity("/project-home-generator/project/{id}/conf",
+				String.class, projectId);
+
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	/**
+	 * Test method for {@link ProjectService#generateProjectConfiguration(Long)}
 	 * without Jenkins and Sonar.
 	 */
 	@Test

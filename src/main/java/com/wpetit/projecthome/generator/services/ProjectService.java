@@ -456,10 +456,16 @@ public class ProjectService {
 	 * @return the configuration
 	 */
 	@RequestMapping(value = "{projectId}/conf", method = RequestMethod.GET, produces = "application/json")
-	public ApplicationConfiguration generateProjectConfiguration(@PathVariable("projectId") final Long projectId,
-			final HttpServletResponse response) {
-		response.setHeader("Content-Disposition", "attachment; filename=environment.json");
-		return projectBusiness.generateProjectConfiguration(projectId);
+	public ResponseEntity<ApplicationConfiguration> generateProjectConfiguration(
+			@PathVariable("projectId") final Long projectId, final HttpServletResponse response) {
+		final ApplicationConfiguration applicationConfiguration = projectBusiness
+				.generateProjectConfiguration(projectId);
+		if (applicationConfiguration != null) {
+			response.setHeader("Content-Disposition", "attachment; filename=environment.json");
+			return new ResponseEntity<>(applicationConfiguration, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }

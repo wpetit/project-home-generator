@@ -255,6 +255,7 @@ public class ProjectBusinessImplTest {
 	/**
 	 * Test method for {@link ProjectBusinessImpl#deleteEnvironmentLink(Long)}.
 	 */
+	@Test
 	public void testDeleteEnvironmentLink() {
 		projectBusinessImpl.deleteEnvironmentLink(1L);
 		verify(environmentLinkDao).delete(1L);
@@ -263,6 +264,7 @@ public class ProjectBusinessImplTest {
 	/**
 	 * Test method for {@link ProjectBusinessImpl#deleteLink(Long)}.
 	 */
+	@Test
 	public void testDeleteLink() {
 		projectBusinessImpl.deleteLink(1L);
 		verify(linkDao).delete(1L);
@@ -271,6 +273,7 @@ public class ProjectBusinessImplTest {
 	/**
 	 * Test method for {@link ProjectBusinessImpl#deleteTool(Long)}.
 	 */
+	@Test
 	public void testDeleteTool() {
 		projectBusinessImpl.deleteTool(1L);
 		verify(toolDao).delete(1L);
@@ -460,6 +463,21 @@ public class ProjectBusinessImplTest {
 		verify(linkDao).findByProjectId(1L);
 		verify(jenkinsConfigurationDao).findByProjectId(1L);
 		verify(sonarConfigurationDao).findByProjectId(1L);
+	}
+
+	/**
+	 * Test method for
+	 * {@link ProjectBusinessImpl#generateProjectConfiguration(Long)} with
+	 * unknown project.
+	 */
+	@Test
+	public void testGenerateProjectConfigurationUnknownProject() {
+		when(projectDao.findOne(1L)).thenReturn(null);
+
+		final ApplicationConfiguration applicationConfiguration = projectBusinessImpl.generateProjectConfiguration(1L);
+
+		assertNull(applicationConfiguration);
+		verify(projectDao).findOne(1L);
 	}
 
 	/**
