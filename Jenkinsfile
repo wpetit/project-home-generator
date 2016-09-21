@@ -39,7 +39,7 @@ node {
 		sh 'mvn sonar:sonar'
 	}
 	
-	stage('Deploy') {
+	stage('Deliver') {
 		sh 'mvn deploy'
 		sh 'cp target/*.jar src/main/docker'
 		dir('src/main/docker') {
