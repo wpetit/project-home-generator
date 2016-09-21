@@ -442,6 +442,16 @@ public class ProjectServiceTest {
 	}
 
 	/**
+	 * Test method for {@link ProjectService#getSonarConfiguration(Long)}.
+	 */
+	@Test
+	public void testGetApacheConfigurationNull() throws Exception {
+		given(projectBusiness.getApacheConfiguration(1L)).willReturn(null);
+		mvc.perform(get("/project/{id}/apache", 1L).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+	}
+
+	/**
 	 * Test method for
 	 * {@link ProjectService#generateProjectConfiguration(Long)}.
 	 */
@@ -487,6 +497,76 @@ public class ProjectServiceTest {
 		mvc.perform(post("/project/1").content("{\"id\":1,\"name\":\"name2\", \"image\":\"image1\"}")
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().json("{\"id\":1,\"name\":\"name2\", \"image\":\"image1\"}"));
+	}
+
+	/**
+	 * Test method for
+	 * {@link ProjectService#updateApacheConfiguration(Long, ApacheConfigurationDto)}.
+	 */
+	@Test
+	public void testUpdateApacheConfiguration() throws Exception {
+		final Project project1 = new Project(1L, "name1", "image1");
+		final ApacheConfiguration apacheConfiguration = new ApacheConfiguration("http://example.org", project1);
+		apacheConfiguration.setId(1L);
+		final ApacheConfigurationDto apacheConfigurationDto = new ApacheConfigurationDto(1L, "http://example.org", 1L);
+
+		given(dtoToModelMapper.map((ApacheConfigurationDto) notNull())).willReturn(apacheConfiguration);
+		given(projectBusiness.addOrUpdateApacheConfiguration(1L, apacheConfiguration)).willReturn(apacheConfiguration);
+		given(modelToDtoMapper.map(apacheConfiguration)).willReturn(apacheConfigurationDto);
+
+		mvc.perform(post("/project/{projectId}/apache/{apacheId}", 1, 1)
+				.content("{\"url\":\"http://example.org\", \"id\":1, \"projectId\":1}")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json("{\"url\":\"http://example.org\", \"id\":1, \"projectId\":1}"));
+	}
+
+	/**
+	 * Test method for
+	 * {@link ProjectService#updateJenkinsConfiguration(Long, JenkinsConfigurationDto)}.
+	 */
+	@Test
+	public void testUpdateJenkinsConfiguration() throws Exception {
+
+		final Project project1 = new Project(1L, "name1", "image1");
+		final JenkinsConfiguration jenkinsConfiguration = new JenkinsConfiguration(1L, "http://example.org/jenkins",
+				Arrays.asList("job1"), project1);
+		final JenkinsConfigurationDto jenkinsConfigurationDto = new JenkinsConfigurationDto(1L,
+				"http://example.org/jenkins", Arrays.asList("job1"), 1L);
+
+		given(dtoToModelMapper.map((JenkinsConfigurationDto) notNull())).willReturn(jenkinsConfiguration);
+		given(projectBusiness.addOrUpdateJenkinsConfiguration(1L, jenkinsConfiguration))
+				.willReturn(jenkinsConfiguration);
+		given(modelToDtoMapper.map(jenkinsConfiguration)).willReturn(jenkinsConfigurationDto);
+
+		mvc.perform(post("/project/{id}/jenkins/{jenkinsId}", 1L, 1L)
+				.content("{\"jobsName\":[\"job1\"], \"url\":\"http://example.org/jenkins\", \"id\":1}")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(
+						content().json("{\"jobsName\":[\"job1\"], \"url\":\"http://example.org/jenkins\", \"id\":1}"));
+	}
+
+	/**
+	 * Test method for
+	 * {@link ProjectService#updateSonarConfiguration(Long, SonarConfigurationDto)}.
+	 */
+	@Test
+	public void testUpdateSonarConfiguration() throws Exception {
+
+		final Project project1 = new Project(1L, "name1", "image1");
+		final SonarConfiguration sonarConfiguration = new SonarConfiguration(1L, "http://example.org/sonar",
+				Arrays.asList("job1"), project1);
+		final SonarConfigurationDto sonarConfigurationDto = new SonarConfigurationDto(1L, "http://example.org/sonar",
+				Arrays.asList("res1"), 1L);
+
+		given(dtoToModelMapper.map((SonarConfigurationDto) notNull())).willReturn(sonarConfiguration);
+		given(projectBusiness.addOrUpdateSonarConfiguration(1L, sonarConfiguration)).willReturn(sonarConfiguration);
+		given(modelToDtoMapper.map(sonarConfiguration)).willReturn(sonarConfigurationDto);
+
+		mvc.perform(post("/project/{id}/sonar/{sonarId}", 1L, 1L)
+				.content("{\"resourceNames\":[\"res1\"], \"url\":\"http://example.org/sonar\", \"id\":1}")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content()
+						.json("{\"resourceNames\":[\"res1\"], \"url\":\"http://example.org/sonar\", \"id\":1}"));
 	}
 
 	/**
